@@ -14,7 +14,7 @@ int Pow(int input, int degree) {
 }
 
 void RadixSort(std::vector<int>& array, int size, int numOfDigits, int numSystem = 10) {
-    // Create numberSystem (= 10) temp vectors.
+    // Create numSystem (= 10) temp vectors.
     std::vector<std::vector<int>> temp(numSystem, std::vector<int>());
 
     int index;
@@ -39,6 +39,14 @@ void RadixSort(std::vector<int>& array, int size, int numOfDigits, int numSystem
         }
     }
 }
+
+
+/* Test inputs
+15
+
+145 12 1766 3 288 99 2405 18 479 100 387 9095 88 206 473
+*/
+
 
 int main() {
     // Initialize array
