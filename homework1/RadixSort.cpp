@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 
+// Exponentiation
 int Pow(int input, int degree) {
     if (degree == 0) {
         return 1;
@@ -12,24 +13,28 @@ int Pow(int input, int degree) {
     return output;
 }
 
-void RadixSort(std::vector<int>& array, int size, int bitDepth, int numberSystem = 10) {
+void RadixSort(std::vector<int>& array, int size, int numOfDigits, int numSystem = 10) {
     // Create numberSystem (= 10) temp vectors.
-    std::vector<std::vector<int>> temp(numberSystem, std::vector<int>());
+    std::vector<std::vector<int>> temp(numSystem, std::vector<int>());
 
     int index;
-    for (int i = 0; i < bitDepth; ++i) {
+    for (int i = 0; i < numOfDigits; ++i) {
+        // temp index
         index = 0;
         for (int j = 0; j < size; ++j) {
-            index = (array[j] / Pow(numberSystem, i)) % numberSystem;
+            index = (array[j] / Pow(numSystem, i)) % numSystem;
             temp[index].push_back(array[j]);
         }
 
+        // array index
         index = 0;
-        for (int k = 0; k < numberSystem; ++k) {
+        // temp elements to array
+        for (int k = 0; k < numSystem; ++k) {
             for (int l = 0; l < temp[k].size(); ++l) {
                 array[index] = temp[k][l];
                 index++;
             }
+            // Clear temp vectors
             temp[k].clear();
         }
     }
@@ -57,11 +62,18 @@ int main() {
             maxElem = elemIn;
         }
     }
+    // Count number of digits of max number 
+    int numOfDigits = 0;
+    while (maxElem > 0) {
+        maxElem /= 10;
+        numOfDigits++;
+    }
 
     // Sort array
-    RadixSort(array, size, 3);
+    RadixSort(array, size, numOfDigits);
     
-    std::cout << std::endl;
+    // Output
+    std::cout << "Результат:" << std::endl;
     for (int i = 0; i < size; ++i) {
         std::cout << array[i] << " ";
     }
