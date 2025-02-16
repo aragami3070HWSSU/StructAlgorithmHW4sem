@@ -48,7 +48,8 @@ void InputFromFile(std::vector<int>& array, int size) {
 
     // Read from file
     int value;
-    while (input >> value) {
+    for (int i = 0; i < size; ++i) {
+        input >> value;
         array.push_back(value);
     }
     // Close input stream
@@ -74,7 +75,8 @@ int main() {
     std::vector<int> array;
 
     int size;
-    size = 50000;
+    // size = 50000;
+    size = 5;
     // Input from file
     InputFromFile(array, size);
 
