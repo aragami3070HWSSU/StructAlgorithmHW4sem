@@ -93,8 +93,15 @@ int main() {
     // Input from file
     InputFromFile(array, size);
 
+    // For count sort time
+    clock_t before = clock();
+
     // Sort array
     HeapSort(array, size);
+
+    // For count sort time
+    clock_t end = clock() - before;
+    std::cout << "Sort time:" << (float)end / CLOCKS_PER_SEC << "seconds" << std::endl;
 
     // Output in file
     OutputInFile(array, size);
