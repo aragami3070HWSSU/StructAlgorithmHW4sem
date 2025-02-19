@@ -120,7 +120,7 @@ int main() {
     // Initialize array
     std::vector<int> array;
 
-    // Input array size
+    // Array size
     int size;
     size = 50000;
     // Input from file

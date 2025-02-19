@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <vector>
 
@@ -53,36 +54,48 @@ void HeapSort(std::vector<int>& array, int size) {
     }
 }
 
+void InputFromFile(std::vector<int>& array, int size) {
+    // Create input stream to read from file
+    std::ifstream input;
+    input.open("input" + std::to_string(size) + ".txt");
+
+    // Read from file
+    int value;
+    for (int i = 0; i < size; ++i) {
+        input >> value;
+        array.push_back(value);
+    }
+    // Close input stream
+    input.close();
+}
+
+void OutputInFile(std::vector<int>& array, int size) {
+    // Create output stream to write in file
+    std::ofstream output;
+    output.open("output" + std::to_string(size) + ".txt");
+
+    // Write in file
+    for (int i = 0; i < size; ++i) {
+        output << array[i] << " ";
+    }
+
+    // Close output stream
+    output.close();
+}
 
 int main() {
     // Initialize array
     std::vector<int> array;
 
-    // Input array size
+    // Array size
     int size;
-    std::cout << "Введите размер массива:" << std::endl;
-    std::cin >> size;
-
-    int maxElem = 0;
-
-    // Filling array
-    std::cout << "Введите массив:" << std::endl;
-    int elemIn;
-    for (int i = 0; i < size; ++i) {
-        std::cin >> elemIn;
-        array.push_back(elemIn);
-        // Find maxElem
-        if (elemIn > maxElem) {
-            maxElem = elemIn;
-        }
-    }
+    size = 1000000;
+    // Input from file
+    InputFromFile(array, size);
 
     // Sort array
     HeapSort(array, size);
 
-    // Output array
-    std::cout << "Результат:" << std::endl;
-    for (int i = 0; i < size; ++i) {
-        std::cout << array[i] << " ";
-    }
+    // Output in file
+    OutputInFile(array, size);
 }

@@ -74,6 +74,7 @@ int main() {
     // Initialize array
     std::vector<int> array;
 
+    // Array size
     int size;
     // size = 50000;
     size = 5;
