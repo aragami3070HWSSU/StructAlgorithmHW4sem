@@ -1,3 +1,4 @@
+#import "@preview/plotst:0.2.0": *
 #set text(size: 8pt)
 = Quick sort
 - 50к элементов среднее время: $(0.006605 + 0.006466 + 0.006634 + 0.00663 + 0.008369)/5 = 0.0069408$
@@ -109,3 +110,25 @@
   table.hline(),
 )
 
+#let graph_plot_test() = {
+    let data1 = (
+      (0.0069408, 50000), (0.014767, 100000), (0.0696074, 500000), (0.1431232, 1000000)
+    )
+    let data2 = (
+      (0.0202334, 50000), (0.0402312, 100000), (0.2144238, 500000), (0.443328599, 1000000)
+    )
+    let data3 = (
+      (0.0150713, 50000), (0.0293149, 100000), (0.16514299, 500000), (0.3522938, 1000000)
+    )
+    let x_axis = axis(min: 0, max: 0.5, step: 0.055, location: "bottom", helper_lines: true, title: $t_(c p)$)
+    let y_axis = axis(min: 0, max: 1005000, step: 50000, location: "left", helper_lines: true, title: $e l e m$)
+    let pl1 = plot(data: data1, axes: (x_axis, y_axis))
+    let pl2 = plot(data: data2, axes: (x_axis, y_axis))
+    let pl3 = plot(data: data3, axes: (x_axis, y_axis))
+    let graphDisplay1 = graph_plot(pl1, (100%, 25%), caption: "График \n Синий: Quick sort \n Красный: Merge sort \n Зеленый: Heap sort", markings: [#circle(radius: 2pt, fill: black)], stroke: blue)
+    let graphDisplay2 = graph_plot(pl2, (100%, 25%), markings: [#circle(radius: 2pt, fill: black)], stroke: red)
+    let graphDisplay3 = graph_plot(pl3, (100%, 25%), markings: [#circle(radius: 2pt, fill: black)], stroke: green)
+    overlay((graphDisplay1, graphDisplay3, graphDisplay2), (100%, 60%))
+}
+
+#graph_plot_test()
