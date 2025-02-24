@@ -41,15 +41,20 @@ void HeapShifting(std::vector<int>& array, int index, int size) {
 }
 
 void HeapSort(std::vector<int>& array, int size) {
+    // Build pyramid by calling HeapShifting
+    // i --- parent index
     for (int i = (size / 2) + 1; i >= 0; i--) {
         HeapShifting(array, i, size);
     }
 
+    // max elem at head of the pyramid => change head with j elem
+    // (last elem from unsorted part of array)
     for (int j = size - 1; j > 0; j--) {
         int temp = array[0];
         array[0] = array[j];
         array[j] = temp;
-
+        
+        // Rebuild pyramid first without including sorted elem's
         HeapShifting(array, 0, j);
     }
 }
