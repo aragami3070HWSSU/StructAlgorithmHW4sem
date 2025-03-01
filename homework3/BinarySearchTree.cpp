@@ -92,3 +92,14 @@ void PreOrder(Tree *tr) {
         PreOrder(tr->Right);
     }
 }
+
+void PostOrder(Tree *tr) {
+    if (tr) {
+        // Go to Left child
+        PostOrder(tr->Left);
+        // Go to Right child
+        PostOrder(tr->Right);
+        // Output elem
+        std::cout << tr->Value << " ";
+    }
+}
