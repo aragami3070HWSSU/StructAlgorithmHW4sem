@@ -18,20 +18,21 @@ void Insert(Tree *&tr, int value) {
     if (!tr) {
         // Then new node is root
         tr = newNode;
-    } else {
+    }
+    else {
         // Create temp pointer on tree
         Tree *temp = tr;
         while (temp) {
             // If new elem > temp elem
-            if (newNode->Value > temp->Value){
+            if (newNode->Value > temp->Value) {
                 // If temp have right child
-                if (temp->Right){
+                if (temp->Right) {
                     // Then move temp pointer to right child
                     temp = temp->Right;
                 }
                 else {
                     // New elem is right child temp
-                    newNode->Parent =temp;
+                    newNode->Parent = temp;
                     temp->Right = newNode;
                     break;
                 }
@@ -43,12 +44,28 @@ void Insert(Tree *&tr, int value) {
                     // Then move temp pointer to left child
                     temp = temp->Left;
                 }
-                else{
+                else {
                     // New elem is left child temp
                     newNode->Parent = temp;
                     temp->Left = newNode;
                 }
             }
         }
+    }
+}
+
+Tree *Find(Tree *tr, int value) {
+    // If find or tree end
+    if (tr->Value == value || !tr) {
+        return tr;
+    }
+    // If value > this elem
+    if (tr->Value < value) {
+        // Go to right child
+        return Find(tr->Right, value);
+    }
+    else {
+        // Go to left child
+        return Find(tr->Left, value);
     }
 }
