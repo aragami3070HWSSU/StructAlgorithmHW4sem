@@ -1,0 +1,30 @@
+#pragma once
+
+// Binary Tree
+struct Tree {
+    int Value;
+    Tree *Left;
+    Tree *Right;
+    Tree *Parent;
+};
+
+// Create new node
+Tree *Node(int value);
+
+// Insert node with value
+void Insert(Tree *&tr, int value);
+
+// Find node by value
+Tree *Find(Tree *tr, int value);
+
+// Delete node
+void Delete(Tree *&tr, Tree *node);
+
+// Symmetric
+void InOrder(Tree *tr);
+
+// Straight
+void PreOrder(Tree *tr);
+
+// Reverse
+void PostOrder(Tree *tr);
