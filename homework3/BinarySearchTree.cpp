@@ -1,4 +1,5 @@
 #include "BinarySearchTree.h"
+#include <iostream>
 
 Tree *Node(int value) {
     // Create new node
@@ -67,5 +68,16 @@ Tree *Find(Tree *tr, int value) {
     else {
         // Go to left child
         return Find(tr->Left, value);
+    }
+}
+
+void InOrder(Tree *tr) {
+    if (tr) {
+        // Go to Left child
+        InOrder(tr->Left);
+        // Output elem
+        std::cout << tr->Value << " ";
+        // Go to Right child
+        InOrder(tr->Right);
     }
 }
