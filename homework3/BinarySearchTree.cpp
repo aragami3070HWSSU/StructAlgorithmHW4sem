@@ -81,3 +81,14 @@ void InOrder(Tree *tr) {
         InOrder(tr->Right);
     }
 }
+
+void PreOrder(Tree *tr) {
+    if (tr) {
+        // Output elem
+        std::cout << tr->Value << " ";
+        // Go to Left child
+        PreOrder(tr->Left);
+        // Go to Right child
+        PreOrder(tr->Right);
+    }
+}
