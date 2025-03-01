@@ -49,6 +49,7 @@ void Insert(Tree *&tr, int value) {
                     // New elem is left child temp
                     newNode->Parent = temp;
                     temp->Left = newNode;
+                    break;
                 }
             }
         }
