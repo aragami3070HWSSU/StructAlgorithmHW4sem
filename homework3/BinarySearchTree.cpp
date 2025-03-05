@@ -56,6 +56,83 @@ void Insert(Tree *&tr, int value) {
     }
 }
 
+void Delete(Tree *&tr, Tree *node) {
+    // Create delete node parent
+    Tree *nodeParent = node->Parent;
+    // Tree have only one node
+    if (!nodeParent) {
+        tr = nullptr;
+    }
+    // Node haven't children
+    else if (!node->Left && !node->Right) {
+        // Set nullptr pointer on node in parent
+        if (nodeParent->Left == node) {
+            nodeParent->Left = nullptr;
+        }
+        if (nodeParent->Right == node) {
+            nodeParent->Right = nullptr;
+        }
+        delete node;
+    }
+    // If only one child
+    else if (!node->Left || !node->Right) {
+        // If delete root which have 1 child
+        if(!nodeParent){
+            // If have right child
+            if (!node->Left) {
+                // His become root
+                tr = node->Right;
+                node->Parent = nullptr;
+            }
+            // If have left child
+            else {
+                // His become root
+                tr = node->Left;
+                node->Parent = nullptr;
+            }
+        }
+        else {
+        
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Tree *Find(Tree *tr, int value) {
     // If find or tree end
     if (tr->Value == value || !tr) {
