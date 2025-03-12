@@ -122,11 +122,60 @@ void Delete(Tree *&tr, Tree *node) {
             }
         }
         else {
+            // If have right child
+            if (!node->Left) {
+                if (nodeParent->Left == node) {
+                    // child of node become child of his "grandpa"
+                    nodeParent->Left = node->Right;
+                }
+                else {
+                    // child of node become child of his "grandpa"
+                    nodeParent->Right = node->Right;
+                }
+                // "Grandpa" become parent of this child
+                node->Right->Parent = nodeParent;
+            }
+            else {
+                if (nodeParent->Left == node) {
+                    // child of node become child of his "grandpa"
+                    nodeParent->Left = node->Left;
+                }
+                else {
+                    // child of node become child of his "grandpa"
+                    nodeParent->Right = node->Left;
+                }
+                // "Grandpa" become parent of this child
+                node->Left->Parent = nodeParent;
+            }
+            delete node;
         }
     }
     // Have 2 child
     else {
-        // Tree *succ = Next(tr );
+        // Next after deleting node
+        Tree *succ = Next(tr, node->Value);
+        node->Value = succ->Value;
+
+        // succ is left child
+        if (succ->Parent->Left == succ) {
+            // His right child become left child of child's "grandpa"
+            succ->Parent->Left = succ->Right;
+            // This child exist
+            if (succ->Right) {
+                // His "grandpa" become his parent
+                succ->Right->Parent = succ->Parent;
+            }
+        }
+        else {
+            // His right child become right child of child's "grandpa"
+            succ->Parent->Right = succ->Right;
+            // This child exist
+            if (succ->Right) {
+                // His "grandpa" become his parent
+                succ->Right->Parent = succ->Parent;
+            }
+        }
+		delete succ;
     }
 }
 
