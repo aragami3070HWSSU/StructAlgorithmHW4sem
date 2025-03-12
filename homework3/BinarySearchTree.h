@@ -21,7 +21,7 @@ Tree *Find(Tree *tr, int value);
 Tree* Min(Tree *tr);
 
 // Find next node
-Tree* Next(Tree *tr, int x);
+Tree* Next(Tree *tr, int value);
 
 // Delete node
 void Delete(Tree *&tr, Tree *node);

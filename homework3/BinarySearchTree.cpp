@@ -56,16 +56,34 @@ void Insert(Tree *&tr, int value) {
     }
 }
 
-Tree *Min(Tree *tr){
-	// If not left child
-	if (!tr->Left) {
-		// Return tr
-		return tr;
-	}
-	else {
-		// Go to left branch to the end
-		return Min(tr->Left);
-	}
+Tree *Min(Tree *tr) {
+    // If not left child
+    if (!tr->Left) {
+        // Return tr
+        return tr;
+    }
+    else {
+        // Go to left branch to the end
+        return Min(tr->Left);
+    }
+}
+
+Tree *Next(Tree *tr, int value) {
+    Tree *node = Find(tr, value);
+    // Have right child
+    if (node->Right) {
+        // Min in right branch
+        return Min(node->Right);
+    }
+    // Parent
+    Tree *nodeParent = node->Parent;
+    // While not root or node is right parent
+    while (nodeParent && node == nodeParent->Right) {
+        // Go up the tree
+        node = nodeParent;
+        nodeParent = nodeParent->Parent;
+    }
+    return nodeParent;
 }
 
 void Delete(Tree *&tr, Tree *node) {
@@ -103,10 +121,12 @@ void Delete(Tree *&tr, Tree *node) {
                 node->Parent = nullptr;
             }
         }
+        else {
+        }
     }
-	// Have 2 child
+    // Have 2 child
     else {
-		// Tree *succ = Next(tr );
+        // Tree *succ = Next(tr );
     }
 }
 
