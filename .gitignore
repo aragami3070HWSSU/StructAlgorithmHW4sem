@@ -4,3 +4,4 @@ output*
 *.pdf
 .cache/
 out/
+compile_commands.json
