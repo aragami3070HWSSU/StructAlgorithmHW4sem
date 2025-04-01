@@ -21,34 +21,33 @@ void InputFromFile(std::vector<int> &array, int size) {
 int main() {
     Tree *tr = nullptr;
     std::vector<int> inputArr;
-	int size = 10;
+    int size = 10;
     InputFromFile(inputArr, size);
 
     for (int i = 0; i < size; ++i) {
-		Insert(tr, inputArr[i]);
+        Insert(tr, inputArr[i]);
     }
 
-	std::cout << "Прямой обход:" << std::endl;
+    std::cout << "Прямой обход:" << std::endl;
     PreOrder(tr);
-	std::cout << std::endl;
-	std::cout << "Симметричный обход:" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Симметричный обход:" << std::endl;
     InOrder(tr);
-	std::cout << std::endl;
-	std::cout << "Обратный обход:" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Обратный обход:" << std::endl;
     PostOrder(tr);
-	std::cout << std::endl;
+    std::cout << std::endl;
 
-	Delete(tr, Find(tr, 8));
+    Delete(tr, Find(tr, 8));
 
-	std::cout << "Нашли и удалили узел со значением 8." << std::endl;
-	std::cout << "Прямой обход:" << std::endl;
+    std::cout << "Нашли и удалили узел со значением 8." << std::endl;
+    std::cout << "Прямой обход:" << std::endl;
     PreOrder(tr);
-	std::cout << std::endl;
-	std::cout << "Симметричный обход:" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Симметричный обход:" << std::endl;
     InOrder(tr);
-	std::cout << std::endl;
-	std::cout << "Обратный обход:" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Обратный обход:" << std::endl;
     PostOrder(tr);
-	std::cout << std::endl;
-
+    std::cout << std::endl;
 }

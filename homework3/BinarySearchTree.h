@@ -18,10 +18,10 @@ void Insert(Tree *&tr, int value);
 Tree *Find(Tree *tr, int value);
 
 // Find min node
-Tree* Min(Tree *tr);
+Tree *Min(Tree *tr);
 
 // Find next node
-Tree* Next(Tree *tr, int value);
+Tree *Next(Tree *tr, int value);
 
 // Delete node
 void Delete(Tree *&tr, Tree *node);

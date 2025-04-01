@@ -175,7 +175,7 @@ void Delete(Tree *&tr, Tree *node) {
                 succ->Right->Parent = succ->Parent;
             }
         }
-		delete succ;
+        delete succ;
     }
 }
 
