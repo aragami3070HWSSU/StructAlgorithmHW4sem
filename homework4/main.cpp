@@ -1,28 +1,34 @@
 #include <iomanip>
 #include <iostream>
 
+enum NodeColor{
+	Black,
+	Red
+};
 
 struct RBTree {
-    int Color;
+    NodeColor Color;
     int Value;
     RBTree *Right;
     RBTree *Left;
     RBTree *Parent;
 };
 
+// Создание корня (черный)
 RBTree *root(int x) {
     RBTree *n = new RBTree;
     n->Parent = n->Left = n->Right = NULL;
-    n->Color = 1;
+    n->Color = Black;
     n->Value = x;
     return n;
 }
 
+// Создание узла (красный)
 RBTree *node(RBTree *p, int x) {
     RBTree *n = new RBTree;
     n->Parent = p;
     n->Left = n->Right = NULL;
-    n->Color = 0;
+    n->Color = Red;
     n->Value = x;
     return n;
 }
@@ -49,7 +55,7 @@ void LeftTurn(RBTree *&tr, RBTree *x) {
     y->Left = x;
     if (!y->Parent) {
         tr = y;
-        tr->Color = 1;
+        tr->Color = Black;
     }
 }
 
@@ -75,7 +81,7 @@ void RightTurn(RBTree *&tr, RBTree *x) {
     y->Right = x;
     if (!y->Parent) {
         tr = y;
-        tr->Color = 1;
+        tr->Color = Black;
     }
 }
 
@@ -115,7 +121,7 @@ void insert_case5(RBTree *&tr, RBTree *x);
 
 void insert_case1(RBTree *&tr, RBTree *x) {
     if (!x->Parent) {
-        x->Color = 1;
+        x->Color = Black;
     }
     else {
         insert_case2(tr, x);
@@ -123,7 +129,7 @@ void insert_case1(RBTree *&tr, RBTree *x) {
 }
 
 void insert_case2(RBTree *&tr, RBTree *x) {
-    if (x->Parent->Color == 1) {
+    if (x->Parent->Color == Black) {
         return;
     }
     insert_case3(tr, x);
@@ -132,10 +138,10 @@ void insert_case2(RBTree *&tr, RBTree *x) {
 void insert_case3(RBTree *&tr, RBTree *x) {
     RBTree *u = uncle(x);
     RBTree *g = grandParent(x);
-    if (u && u->Color == 0 && x->Parent->Color == 0) {
-        u->Color = 1;
-        x->Parent->Color = 1;
-        g->Color = 0;
+    if (u && u->Color == Red && x->Parent->Color == Red) {
+        u->Color = Black;
+        x->Parent->Color = Black;
+        g->Color = Red;
         insert_case1(tr, g);
     }
     else {
@@ -160,8 +166,8 @@ void insert_case4(RBTree *&tr, RBTree *x) {
 
 void insert_case5(RBTree *&tr, RBTree *x) {
     RBTree *g = grandParent(x);
-    g->Color = 0;
-    x->Parent->Color = 1;
+    g->Color = Red;
+    x->Parent->Color = Black;
     if (x == x->Parent->Left && g->Left == x->Parent) {
         RightTurn(tr, g);
     }
@@ -212,9 +218,9 @@ void delete_case1(RBTree *&tr, RBTree *n) {
 
 void delete_case2(RBTree *&tr, RBTree *n) {
     RBTree *s = sibling(n);
-    if (s && s->Color == 0) {
-        n->Parent->Color = 0;
-        s->Color = 1;
+    if (s && s->Color == Red) {
+        n->Parent->Color = Red;
+        s->Color = Black;
         if (n->Parent->Left == n) {
             LeftTurn(tr, n->Parent);
         }
@@ -227,10 +233,10 @@ void delete_case2(RBTree *&tr, RBTree *n) {
 
 void delete_case3(RBTree *&tr, RBTree *n) {
     RBTree *s = sibling(n);
-    if (s && n->Parent->Color == 1 && s->Color == 1 &&
-        (!s->Left || s->Left->Color == 1) &&
-        (!s->Right || s->Right->Color == 1)) {
-        s->Color = 0;
+    if (s && n->Parent->Color == Black && s->Color == Black &&
+        (!s->Left || s->Left->Color == Black) &&
+        (!s->Right || s->Right->Color == Black)) {
+        s->Color = Red;
         delete_case1(tr, n->Parent); // just n
     }
     else {
@@ -240,11 +246,11 @@ void delete_case3(RBTree *&tr, RBTree *n) {
 
 void delete_case4(RBTree *&tr, RBTree *n) {
     RBTree *s = sibling(n);
-    if (n->Parent->Color == 0 && s && s->Color == 1 &&
-        (!s->Left || s->Left->Color == 1) &&
-        (!s->Right || s->Right->Color == 1)) {
-        s->Color = 0;
-        n->Parent->Color = 1;
+    if (n->Parent->Color == Red && s && s->Color == Black &&
+        (!s->Left || s->Left->Color == Black) &&
+        (!s->Right || s->Right->Color == Black)) {
+        s->Color = Red;
+        n->Parent->Color = Black;
     }
     else {
         delete_case5(tr, n);
@@ -253,19 +259,19 @@ void delete_case4(RBTree *&tr, RBTree *n) {
 
 void delete_case5(RBTree *&tr, RBTree *n) {
     RBTree *s = sibling(n);
-    if (s->Color == 1) {
-        if (s && n->Parent->Left == n && (!s->Left || s->Left->Color == 0) &&
-            (!s->Right || s->Right->Color == 1)) {
-            s->Color = 0;
-            s->Left->Color = 1;
+    if (s->Color == Black) {
+        if (s && n->Parent->Left == n && (!s->Left || s->Left->Color == Red) &&
+            (!s->Right || s->Right->Color == Black)) {
+            s->Color = Red;
+            s->Left->Color = Black;
             RightTurn(tr, s);
         }
         else {
             if (s && n->Parent->Right == n &&
-                (!s->Right || s->Right->Color == 0) &&
-                (!s->Left || s->Left->Color == 1)) {
-                s->Color = 0;
-                s->Right->Color = 1;
+                (!s->Right || s->Right->Color == Red) &&
+                (!s->Left || s->Left->Color == Black)) {
+                s->Color = Red;
+                s->Right->Color = Black;
                 LeftTurn(tr, s);
             }
         }
@@ -276,13 +282,13 @@ void delete_case5(RBTree *&tr, RBTree *n) {
 void delete_case6(RBTree *&tr, RBTree *n) {
     RBTree *s = sibling(n);
     s->Color = n->Parent->Color;
-    n->Parent->Color = 1;
+    n->Parent->Color = Black;
     if (n->Parent->Left == n) {
-        s->Right->Color = 1;
+        s->Right->Color = Black;
         LeftTurn(tr, n->Parent);
     }
     else {
-        s->Left->Color = 1;
+        s->Left->Color = Black;
         RightTurn(tr, n->Parent);
     }
 }
@@ -322,16 +328,16 @@ void DeleteOne(RBTree *&tr, RBTree *n) {
             ch = n->Right;
         }
         replace(tr, n, ch); // child - ребёнок деда
-        if (n->Color == 1) {
+        if (n->Color == Black) {
             // Всегда n - чёрный, ребёнок - красный
-            if (ch->Color == 0) {
-                ch->Color = 1;
+            if (ch->Color == Red) {
+                ch->Color = Black;
             }
         }
     }
     else // Нет детей
     {
-        if (n->Color == 1) // Сложный случай
+        if (n->Color == Black) // Сложный случай
         {
             delete_case1(tr, n);
         }
