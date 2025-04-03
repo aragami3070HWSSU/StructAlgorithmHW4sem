@@ -427,37 +427,55 @@ void print(RBTree *x) {
 
 int main() {
     int n, x;
+	// Вводим количество элементов
     std::cout << "Number of elements = ";
     std::cin >> n;
     RBTree *tr = NULL;
-    std::cout << "Enter " << n << " elems: ";
+    std::cout << "Enter " << n << " elements: ";
+	// Заполнение КЧД
     for (int i = 0; i < n; ++i) {
+		// Вводим значение
         std::cin >> x;
+		// Если нет корня
         if (i == 0) {
+			// То создаем корень
             tr = root(x);
         }
+		// Если есть корень
         else {
+			// То создаем узел
             insert(tr, tr, x);
         }
     }
+
     RBTree *RBTree_root = tr;
+	// Выводим созданное КЧД
     print(RBTree_root);
+
+	// Удаление всех узлов по введенному значению
     while (RBTree_root) {
-        std::cout << "Let's delete n" << std::endl;
-        std::cout << "x = ";
-        std::cin >> x;
-        RBTree *n = find(RBTree_root, x);
-        if (n) {
-            delete_one(RBTree_root, n);
+		// Вводим значение узла
+        std::cout << "Delete n" << std::endl;
+        std::cout << "n = ";
+        std::cin >> n;
+		// Поиск узла по значению
+        RBTree *node = find(RBTree_root, n);
+		// Если нашли узел
+        if (node) {
+			// Удаляем узел
+            delete_one(RBTree_root, node);
+			// Если это был последний узел
             if (!RBTree_root) {
-                std::cout << "No elems in RBTree" << std::endl;
+                std::cout << "No elements in RBTree" << std::endl;
             }
             else {
+				// Выводим КЧД
                 print(RBTree_root);
             }
         }
+		// Не нашли узел
         else {
-            std::cout << x << " not in RBTree" << std::endl;
+            std::cout << n << " not in RBTree" << std::endl;
         }
     }
 }
