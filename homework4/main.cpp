@@ -3,106 +3,106 @@
 
 
 struct RBTree {
-    RBTree *right;
-    RBTree *left;
-    RBTree *parent;
-    int color;
-    int val;
+    int Color;
+    int Value;
+    RBTree *Right;
+    RBTree *Left;
+    RBTree *Parent;
 };
 
 RBTree *root(int x) {
     RBTree *n = new RBTree;
-    n->parent = n->left = n->right = NULL;
-    n->color = 1;
-    n->val = x;
+    n->Parent = n->Left = n->Right = NULL;
+    n->Color = 1;
+    n->Value = x;
     return n;
 }
 
 RBTree *node(RBTree *p, int x) {
     RBTree *n = new RBTree;
-    n->parent = p;
-    n->left = n->right = NULL;
-    n->color = 0;
-    n->val = x;
+    n->Parent = p;
+    n->Left = n->Right = NULL;
+    n->Color = 0;
+    n->Value = x;
     return n;
 }
 
-void leftTurn(RBTree *&tr, RBTree *x) {
-    RBTree *y = x->right;
-    y->parent = x->parent;
-    if (x->parent) {
-        if (x->parent->left == x) {
-            x->parent->left = y;
+void LeftTurn(RBTree *&tr, RBTree *x) {
+    RBTree *y = x->Right;
+    y->Parent = x->Parent;
+    if (x->Parent) {
+        if (x->Parent->Left == x) {
+            x->Parent->Left = y;
         }
         else {
-            x->parent->right = y;
+            x->Parent->Right = y;
         }
     }
-    x->right = y->left;
-    if (y->left) {
-        y->left->parent = x;
+    x->Right = y->Left;
+    if (y->Left) {
+        y->Left->Parent = x;
     }
-    if (y->left != NULL) {
-        y->left->parent = x;
+    if (y->Left != NULL) {
+        y->Left->Parent = x;
     }
-    x->parent = y;
-    y->left = x;
-    if (!y->parent) {
+    x->Parent = y;
+    y->Left = x;
+    if (!y->Parent) {
         tr = y;
-        tr->color = 1;
+        tr->Color = 1;
     }
 }
 
-void rightTurn(RBTree *&tr, RBTree *x) {
-    RBTree *y = x->left;
-    y->parent = x->parent;
-    if (x->parent) {
-        if (x->parent->left == x) {
-            x->parent->left = y;
+void RightTurn(RBTree *&tr, RBTree *x) {
+    RBTree *y = x->Left;
+    y->Parent = x->Parent;
+    if (x->Parent) {
+        if (x->Parent->Left == x) {
+            x->Parent->Left = y;
         }
         else {
-            x->parent->right = y;
+            x->Parent->Right = y;
         }
     }
-    x->left = y->right;
-    if (y->right) {
-        y->parent = x;
+    x->Left = y->Right;
+    if (y->Right) {
+        y->Parent = x;
     }
-    if (y->right != NULL) {
-        y->right->parent = x;
+    if (y->Right != NULL) {
+        y->Right->Parent = x;
     }
-    x->parent = y;
-    y->right = x;
-    if (!y->parent) {
+    x->Parent = y;
+    y->Right = x;
+    if (!y->Parent) {
         tr = y;
-        tr->color = 1;
+        tr->Color = 1;
     }
 }
 
-RBTree *grandparent(RBTree *x) {
-    if (x && x->parent) {
-        return x->parent->parent;
+RBTree *grandParent(RBTree *x) {
+    if (x && x->Parent) {
+        return x->Parent->Parent;
     }
     return NULL;
 }
 
 RBTree *uncle(RBTree *x) {
-    RBTree *g = grandparent(x);
+    RBTree *g = grandParent(x);
     if (!g) {
         return NULL;
     }
-    if (g->left == x->parent) {
-        return g->right;
+    if (g->Left == x->Parent) {
+        return g->Right;
     }
-    return g->left;
+    return g->Left;
 }
 
 RBTree *sibling(RBTree *x) {
-    if (x && x->parent) {
-        if (x->parent->left == x) {
-            return x->parent->right;
+    if (x && x->Parent) {
+        if (x->Parent->Left == x) {
+            return x->Parent->Right;
         }
-        return x->parent->left;
+        return x->Parent->Left;
     }
     return NULL;
 }
@@ -114,8 +114,8 @@ void insert_case4(RBTree *&tr, RBTree *x);
 void insert_case5(RBTree *&tr, RBTree *x);
 
 void insert_case1(RBTree *&tr, RBTree *x) {
-    if (!x->parent) {
-        x->color = 1;
+    if (!x->Parent) {
+        x->Color = 1;
     }
     else {
         insert_case2(tr, x);
@@ -123,7 +123,7 @@ void insert_case1(RBTree *&tr, RBTree *x) {
 }
 
 void insert_case2(RBTree *&tr, RBTree *x) {
-    if (x->parent->color == 1) {
+    if (x->Parent->Color == 1) {
         return;
     }
     insert_case3(tr, x);
@@ -131,11 +131,11 @@ void insert_case2(RBTree *&tr, RBTree *x) {
 
 void insert_case3(RBTree *&tr, RBTree *x) {
     RBTree *u = uncle(x);
-    RBTree *g = grandparent(x);
-    if (u && u->color == 0 && x->parent->color == 0) {
-        u->color = 1;
-        x->parent->color = 1;
-        g->color = 0;
+    RBTree *g = grandParent(x);
+    if (u && u->Color == 0 && x->Parent->Color == 0) {
+        u->Color = 1;
+        x->Parent->Color = 1;
+        g->Color = 0;
         insert_case1(tr, g);
     }
     else {
@@ -144,48 +144,48 @@ void insert_case3(RBTree *&tr, RBTree *x) {
 }
 
 void insert_case4(RBTree *&tr, RBTree *x) {
-    RBTree *g = grandparent(x);
-    if (x->parent->right == x && g->left == x->parent) {
-        leftTurn(tr, x->parent);
-        x = x->left;
+    RBTree *g = grandParent(x);
+    if (x->Parent->Right == x && g->Left == x->Parent) {
+        LeftTurn(tr, x->Parent);
+        x = x->Left;
     }
     else {
-        if (x->parent->left == x && g->right == x->parent) {
-            rightTurn(tr, x->parent);
-            x = x->right;
+        if (x->Parent->Left == x && g->Right == x->Parent) {
+            RightTurn(tr, x->Parent);
+            x = x->Right;
         }
     }
     insert_case5(tr, x);
 }
 
 void insert_case5(RBTree *&tr, RBTree *x) {
-    RBTree *g = grandparent(x);
-    g->color = 0;
-    x->parent->color = 1;
-    if (x == x->parent->left && g->left == x->parent) {
-        rightTurn(tr, g);
+    RBTree *g = grandParent(x);
+    g->Color = 0;
+    x->Parent->Color = 1;
+    if (x == x->Parent->Left && g->Left == x->Parent) {
+        RightTurn(tr, g);
     }
     else {
-        leftTurn(tr, g);
+        LeftTurn(tr, g);
     }
 }
 
 void insert(RBTree *&tr, RBTree *prev, int x) {
-    if (x < prev->val && !prev->left) {
-        prev->left = node(prev, x);
-        insert_case1(tr, prev->left);
+    if (x < prev->Value && !prev->Left) {
+        prev->Left = node(prev, x);
+        insert_case1(tr, prev->Left);
         return;
     }
-    if (x > prev->val && !prev->right) {
-        prev->right = node(prev, x);
-        insert_case1(tr, prev->right);
+    if (x > prev->Value && !prev->Right) {
+        prev->Right = node(prev, x);
+        insert_case1(tr, prev->Right);
         return;
     }
-    if (x < prev->val && prev->left) {
-        insert(tr, prev->left, x);
+    if (x < prev->Value && prev->Left) {
+        insert(tr, prev->Left, x);
     }
-    if (x > prev->val && prev->right) {
-        insert(tr, prev->right, x);
+    if (x > prev->Value && prev->Right) {
+        insert(tr, prev->Right, x);
     }
 }
 
@@ -197,12 +197,12 @@ void delete_case5(RBTree *&tr, RBTree *n);
 void delete_case6(RBTree *&tr, RBTree *n);
 
 void delete_case1(RBTree *&tr, RBTree *n) {
-    if (!n->parent) {
-        if (n->left) {
-            tr = n->left;
+    if (!n->Parent) {
+        if (n->Left) {
+            tr = n->Left;
         }
         else {
-            tr = n->right;
+            tr = n->Right;
         }
     }
     else {
@@ -212,14 +212,14 @@ void delete_case1(RBTree *&tr, RBTree *n) {
 
 void delete_case2(RBTree *&tr, RBTree *n) {
     RBTree *s = sibling(n);
-    if (s && s->color == 0) {
-        n->parent->color = 0;
-        s->color = 1;
-        if (n->parent->left == n) {
-            leftTurn(tr, n->parent);
+    if (s && s->Color == 0) {
+        n->Parent->Color = 0;
+        s->Color = 1;
+        if (n->Parent->Left == n) {
+            LeftTurn(tr, n->Parent);
         }
         else {
-            rightTurn(tr, n->parent);
+            RightTurn(tr, n->Parent);
         }
     }
     delete_case3(tr, n);
@@ -227,11 +227,11 @@ void delete_case2(RBTree *&tr, RBTree *n) {
 
 void delete_case3(RBTree *&tr, RBTree *n) {
     RBTree *s = sibling(n);
-    if (s && n->parent->color == 1 && s->color == 1 &&
-        (!s->left || s->left->color == 1) &&
-        (!s->right || s->right->color == 1)) {
-        s->color = 0;
-        delete_case1(tr, n->parent); // just n
+    if (s && n->Parent->Color == 1 && s->Color == 1 &&
+        (!s->Left || s->Left->Color == 1) &&
+        (!s->Right || s->Right->Color == 1)) {
+        s->Color = 0;
+        delete_case1(tr, n->Parent); // just n
     }
     else {
         delete_case4(tr, n);
@@ -240,11 +240,11 @@ void delete_case3(RBTree *&tr, RBTree *n) {
 
 void delete_case4(RBTree *&tr, RBTree *n) {
     RBTree *s = sibling(n);
-    if (n->parent->color == 0 && s && s->color == 1 &&
-        (!s->left || s->left->color == 1) &&
-        (!s->right || s->right->color == 1)) {
-        s->color = 0;
-        n->parent->color = 1;
+    if (n->Parent->Color == 0 && s && s->Color == 1 &&
+        (!s->Left || s->Left->Color == 1) &&
+        (!s->Right || s->Right->Color == 1)) {
+        s->Color = 0;
+        n->Parent->Color = 1;
     }
     else {
         delete_case5(tr, n);
@@ -253,20 +253,20 @@ void delete_case4(RBTree *&tr, RBTree *n) {
 
 void delete_case5(RBTree *&tr, RBTree *n) {
     RBTree *s = sibling(n);
-    if (s->color == 1) {
-        if (s && n->parent->left == n && (!s->left || s->left->color == 0) &&
-            (!s->right || s->right->color == 1)) {
-            s->color = 0;
-            s->left->color = 1;
-            rightTurn(tr, s);
+    if (s->Color == 1) {
+        if (s && n->Parent->Left == n && (!s->Left || s->Left->Color == 0) &&
+            (!s->Right || s->Right->Color == 1)) {
+            s->Color = 0;
+            s->Left->Color = 1;
+            RightTurn(tr, s);
         }
         else {
-            if (s && n->parent->right == n &&
-                (!s->right || s->right->color == 0) &&
-                (!s->left || s->left->color == 1)) {
-                s->color = 0;
-                s->right->color = 1;
-                leftTurn(tr, s);
+            if (s && n->Parent->Right == n &&
+                (!s->Right || s->Right->Color == 0) &&
+                (!s->Left || s->Left->Color == 1)) {
+                s->Color = 0;
+                s->Right->Color = 1;
+                LeftTurn(tr, s);
             }
         }
     }
@@ -275,27 +275,27 @@ void delete_case5(RBTree *&tr, RBTree *n) {
 
 void delete_case6(RBTree *&tr, RBTree *n) {
     RBTree *s = sibling(n);
-    s->color = n->parent->color;
-    n->parent->color = 1;
-    if (n->parent->left == n) {
-        s->right->color = 1;
-        leftTurn(tr, n->parent);
+    s->Color = n->Parent->Color;
+    n->Parent->Color = 1;
+    if (n->Parent->Left == n) {
+        s->Right->Color = 1;
+        LeftTurn(tr, n->Parent);
     }
     else {
-        s->left->color = 1;
-        rightTurn(tr, n->parent);
+        s->Left->Color = 1;
+        RightTurn(tr, n->Parent);
     }
 }
 
 void replace(RBTree *&tr, RBTree *v,
              RBTree *ch) { // Делаем ребёнка вершины v ребёнком деда
-    ch->parent = v->parent;
-    if (v->parent) {
-        if (v == v->parent->left) {
-            v->parent->left = ch;
+    ch->Parent = v->Parent;
+    if (v->Parent) {
+        if (v == v->Parent->Left) {
+            v->Parent->Left = ch;
         }
         else {
-            v->parent->right = ch;
+            v->Parent->Right = ch;
         }
     }
     else {
@@ -303,94 +303,101 @@ void replace(RBTree *&tr, RBTree *v,
     }
 }
 
-void delete_one(RBTree *&tr, RBTree *n) {
-    if (n->left && n->right) {
-        RBTree *u = n->left;
-        while (u->right) {
-            u = u->right;
+void DeleteOne(RBTree *&tr, RBTree *n) {
+    if (n->Left && n->Right) {
+        RBTree *u = n->Left;
+        while (u->Right) {
+            u = u->Right;
         }
-		std::swap(u->val, n->val);
+		std::swap(u->Value, n->Value);
         n = u;
     }
     // Всегда 1 или 0 детей
-    if (n->left || n->right) {
+    if (n->Left || n->Right) {
         RBTree *ch;
-        if (n->left) {
-            ch = n->left;
+        if (n->Left) {
+            ch = n->Left;
         }
         else {
-            ch = n->right;
+            ch = n->Right;
         }
         replace(tr, n, ch); // child - ребёнок деда
-        if (n->color == 1) {
+        if (n->Color == 1) {
             // Всегда n - чёрный, ребёнок - красный
-            if (ch->color == 0) {
-                ch->color = 1;
+            if (ch->Color == 0) {
+                ch->Color = 1;
             }
         }
     }
     else // Нет детей
     {
-        if (n->color == 1) // Сложный случай
+        if (n->Color == 1) // Сложный случай
         {
             delete_case1(tr, n);
         }
         else // Вершина красная, просто удаляем
         {
-            if (n == n->parent->left) {
-                n->parent->left = NULL;
+            if (n == n->Parent->Left) {
+                n->Parent->Left = NULL;
             }
             else {
-                n->parent->right = NULL;
+                n->Parent->Right = NULL;
             }
         }
     }
-    if (n->parent != NULL) {
+    if (n->Parent != NULL) {
         RBTree *buf = n;
-        while (buf->parent) {
-            buf = buf->parent;
+        while (buf->Parent) {
+            buf = buf->Parent;
         }
         tr = buf;
-        if (n == n->parent->left) {
-            n->parent->left = NULL;
+        if (n == n->Parent->Left) {
+            n->Parent->Left = NULL;
         }
-        else if (n->parent->right == n) {
-            n->parent->right = NULL;
+        else if (n->Parent->Right == n) {
+            n->Parent->Right = NULL;
         }
     }
     delete n;
 }
 
-RBTree *find(RBTree *pr, int val) {
-    if (!pr || pr->val == val) {
-        return pr;
+// Поиск
+RBTree *Find(RBTree *tr, int Value) {
+    // If find or tree end
+    if (tr->Value == Value || !tr) {
+        return tr;
     }
-    if (pr->val > val) {
-        return find(pr->left, val);
+    // If Valueue > this elem
+    if (tr->Value < Value) {
+        // Go to Right child
+        return Find(tr->Right, Value);
     }
-    return find(pr->right, val);
+    else {
+        // Go to Left child
+        return Find(tr->Left, Value);
+    }
 }
 
 void max_height(RBTree *x, short &max, short deepness = 1) {
     if (deepness > max) {
         max = deepness;
     }
-    if (x->left) {
-        max_height(x->left, max, deepness + 1);
+    if (x->Left) {
+        max_height(x->Left, max, deepness + 1);
     }
-    if (x->right) {
-        max_height(x->right, max, deepness + 1);
+    if (x->Right) {
+        max_height(x->Right, max, deepness + 1);
     }
 }
 
 void print_helper(RBTree ***arr, RBTree *x, const short deepness = 0,
                   const short ind = 0) {
     arr[deepness][ind] = x;
-    if (x->left) {
-        print_helper(arr, x->left, deepness + 1, 2 * ind);
+    if (x->Left) {
+        print_helper(arr, x->Left, deepness + 1, 2 * ind);
     }
-    if (x->right) {
-        print_helper(arr, x->right, deepness + 1, 2 * ind + 1);
+    if (x->Right) {
+        print_helper(arr, x->Right, deepness + 1, 2 * ind + 1);
     }
 }
 void print(RBTree *x) {
@@ -409,10 +416,10 @@ void print(RBTree *x) {
         print_helper(arr, x);
         for (short i = 0; i < max; ++i) {
             std::cout << std::setw((offset >> 1) + 1);
-            arr[i][0] ? std::cout << arr[i][0]->val : std::cout << ' ';
+            arr[i][0] ? std::cout << arr[i][0]->Value : std::cout << ' ';
             for (short j = 1; j < width; ++j) {
                 std::cout << std::setw(offset);
-                arr[i][j] ? std::cout << arr[i][j]->val : std::cout << ' ';
+                arr[i][j] ? std::cout << arr[i][j]->Value : std::cout << ' ';
             }
             offset >>= 1;
             width <<= 1;
@@ -459,11 +466,11 @@ int main() {
         std::cout << "n = ";
         std::cin >> n;
 		// Поиск узла по значению
-        RBTree *node = find(RBTree_root, n);
+        RBTree *node = Find(RBTree_root, n);
 		// Если нашли узел
         if (node) {
 			// Удаляем узел
-            delete_one(RBTree_root, node);
+            DeleteOne(RBTree_root, node);
 			// Если это был последний узел
             if (!RBTree_root) {
                 std::cout << "No elements in RBTree" << std::endl;
