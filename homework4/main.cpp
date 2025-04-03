@@ -1,7 +1,6 @@
 #include <iomanip>
 #include <iostream>
 
-using namespace std;
 
 struct RBTree {
     RBTree *right;
@@ -234,8 +233,9 @@ void delete_case3(RBTree *&tr, RBTree *n) {
         s->color = 0;
         delete_case1(tr, n->parent); // just n
     }
-    else
+    else {
         delete_case4(tr, n);
+    }
 }
 
 void delete_case4(RBTree *&tr, RBTree *n) {
@@ -246,8 +246,9 @@ void delete_case4(RBTree *&tr, RBTree *n) {
         s->color = 0;
         n->parent->color = 1;
     }
-    else
+    else {
         delete_case5(tr, n);
+    }
 }
 
 void delete_case5(RBTree *&tr, RBTree *n) {
@@ -308,89 +309,66 @@ void delete_one(RBTree *&tr, RBTree *n) {
         while (u->right) {
             u = u->right;
         }
-        swap(u->val, n->val);
+		std::swap(u->val, n->val);
         n = u;
     }
     // Всегда 1 или 0 детей
     if (n->left || n->right) {
         RBTree *ch;
-        if (n->left)
+        if (n->left) {
             ch = n->left;
-        else
+        }
+        else {
             ch = n->right;
+        }
         replace(tr, n, ch); // child - ребёнок деда
         if (n->color == 1) {
             // Всегда n - чёрный, ребёнок - красный
-            if (ch->color == 0)
+            if (ch->color == 0) {
                 ch->color = 1;
+            }
         }
     }
     else // Нет детей
     {
         if (n->color == 1) // Сложный случай
+        {
             delete_case1(tr, n);
+        }
         else // Вершина красная, просто удаляем
         {
-            if (n == n->parent->left)
+            if (n == n->parent->left) {
                 n->parent->left = NULL;
-            else
+            }
+            else {
                 n->parent->right = NULL;
+            }
         }
     }
     if (n->parent != NULL) {
         RBTree *buf = n;
-        while (buf->parent)
+        while (buf->parent) {
             buf = buf->parent;
+        }
         tr = buf;
-        if (n == n->parent->left)
+        if (n == n->parent->left) {
             n->parent->left = NULL;
-        else if (n->parent->right == n)
+        }
+        else if (n->parent->right == n) {
             n->parent->right = NULL;
+        }
     }
     delete n;
 }
 
 RBTree *find(RBTree *pr, int val) {
-    if (!pr || pr->val == val)
+    if (!pr || pr->val == val) {
         return pr;
-    if (pr->val > val)
-        return find(pr->left, val);
-    return find(pr->right, val);
-}
-
-void leaf_count(RBTree *tr, int &counter) {
-    if (tr) {
-        leaf_count(tr->left, counter);
-        cout << "I am looking at " << tr->val << '\n';
-        if (tr->left) {
-            cout << "Left ch " << tr->left->val << '\n';
-        }
-        else {
-            cout << "Left ch none" << '\n';
-        }
-        if (tr->right) {
-            cout << "Right ch " << tr->right->val << '\n';
-        }
-        else {
-            cout << "Right ch none" << '\n';
-        }
-        if (tr->parent) {
-            cout << "Parent " << tr->parent->val << '\n';
-        }
-        else {
-            cout << "Parent none" << '\n';
-        }
-
-        if (tr->left == nullptr && tr->right == nullptr) {
-            cout << "I THINK ITS LEAF: " << tr->val << '\n';
-            counter++;
-        }
-        leaf_count(tr->right, counter);
-        if (tr->left == nullptr && tr->right == nullptr) {
-            cout << "I THINK ITS LEAF: " << tr->val << '\n';
-            counter++;
-        }
     }
+    if (pr->val > val) {
+        return find(pr->left, val);
+    }
+    return find(pr->right, val);
 }
 
 void max_height(RBTree *x, short &max, short deepness = 1) {
@@ -408,10 +386,12 @@ void max_height(RBTree *x, short &max, short deepness = 1) {
 void print_helper(RBTree ***arr, RBTree *x, const short deepness = 0,
                   const short ind = 0) {
     arr[deepness][ind] = x;
-    if (x->left)
+    if (x->left) {
         print_helper(arr, x->left, deepness + 1, 2 * ind);
-    if (x->right)
+    }
+    if (x->right) {
         print_helper(arr, x->right, deepness + 1, 2 * ind + 1);
+    }
 }
 void print(RBTree *x) {
     if (x) {
@@ -420,58 +400,64 @@ void print(RBTree *x) {
         RBTree ***arr = new RBTree **[max];
         for (short i = 0; i < max; ++i) {
             arr[i] = new RBTree *[offset];
-            for (short j = 0; j < offset; ++j)
+            for (short j = 0; j < offset; ++j) {
                 arr[i][j] = nullptr;
+            }
             offset <<= 1;
         }
         offset <<= 1;
         print_helper(arr, x);
         for (short i = 0; i < max; ++i) {
-            cout << setw((offset >> 1) + 1);
-            arr[i][0] ? cout << arr[i][0]->val : cout << ' ';
+            std::cout << std::setw((offset >> 1) + 1);
+            arr[i][0] ? std::cout << arr[i][0]->val : std::cout << ' ';
             for (short j = 1; j < width; ++j) {
-                cout << setw(offset);
-                arr[i][j] ? cout << arr[i][j]->val : cout << ' ';
+                std::cout << std::setw(offset);
+                arr[i][j] ? std::cout << arr[i][j]->val : std::cout << ' ';
             }
             offset >>= 1;
             width <<= 1;
-            cout << '\n';
+            std::cout << std::endl;
         }
-        for (short i = 0; i < max; ++i)
+        for (short i = 0; i < max; ++i) {
             delete[] arr[i];
+        }
         delete[] arr;
     }
 }
 
 int main() {
     int n, x;
-    cout << "n = ";
-    cin >> n;
+    std::cout << "Number of elements = ";
+    std::cin >> n;
     RBTree *tr = NULL;
-    cout << "Enter " << n << " elems: ";
+    std::cout << "Enter " << n << " elems: ";
     for (int i = 0; i < n; ++i) {
-        cin >> x;
-        if (i == 0)
+        std::cin >> x;
+        if (i == 0) {
             tr = root(x);
-        else
+        }
+        else {
             insert(tr, tr, x);
+        }
     }
     RBTree *RBTree_root = tr;
     print(RBTree_root);
     while (RBTree_root) {
-        cout << "Let's delete x\n";
-        cout << "x = ";
-        cin >> x;
+        std::cout << "Let's delete n" << std::endl;
+        std::cout << "x = ";
+        std::cin >> x;
         RBTree *n = find(RBTree_root, x);
         if (n) {
             delete_one(RBTree_root, n);
-            if (!RBTree_root)
-                cout << "No elems in RBTree\n";
-            else
+            if (!RBTree_root) {
+                std::cout << "No elems in RBTree" << std::endl;
+            }
+            else {
                 print(RBTree_root);
+            }
         }
         else {
-            cout << x << " not in RBTree\n";
+            std::cout << x << " not in RBTree" << std::endl;
         }
     }
 }
