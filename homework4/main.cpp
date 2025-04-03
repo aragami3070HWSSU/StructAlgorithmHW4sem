@@ -363,17 +363,17 @@ void DeleteOne(RBTree *&tr, RBTree *n) {
 
 // Поиск
 RBTree *Find(RBTree *tr, int Value) {
-    // If find or tree end
+	// Если КЧД кончился или нашли
     if (!tr || tr->Value == Value) {
         return tr;
     }
-    // If Valueue > this elem
+    // Если Value > этого элемента
     if (tr->Value < Value) {
-        // Go to Right child
+		// Идем к правому ребенку
         return Find(tr->Right, Value);
     }
     else {
-        // Go to Left child
+		// Идем к левому ребенку
         return Find(tr->Left, Value);
     }
 }
@@ -400,7 +400,7 @@ void print_helper(RBTree ***arr, RBTree *x, const short deepness = 0,
         print_helper(arr, x->Right, deepness + 1, 2 * ind + 1);
     }
 }
-void print(RBTree *x) {
+void Print(RBTree *x) {
     if (x) {
         short max = 1, offset = 1, width = 1;
         max_height(x, max);
@@ -457,7 +457,7 @@ int main() {
 
     RBTree *RBTree_root = tr;
 	// Выводим созданное КЧД
-    print(RBTree_root);
+    Print(RBTree_root);
 
 	// Удаление всех узлов по введенному значению
     while (RBTree_root) {
@@ -477,7 +477,7 @@ int main() {
             }
             else {
 				// Выводим КЧД
-                print(RBTree_root);
+                Print(RBTree_root);
             }
         }
 		// Не нашли узел
