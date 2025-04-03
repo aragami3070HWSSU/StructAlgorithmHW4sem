@@ -364,7 +364,7 @@ void DeleteOne(RBTree *&tr, RBTree *n) {
 // Поиск
 RBTree *Find(RBTree *tr, int Value) {
     // If find or tree end
-    if (tr->Value == Value || !tr) {
+    if (!tr || tr->Value == Value) {
         return tr;
     }
     // If Valueue > this elem
