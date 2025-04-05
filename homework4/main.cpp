@@ -87,29 +87,42 @@ void RightTurn(RBTree *&tr, RBTree *node) {
     }
 }
 
+// Найти деда
 RBTree *grandParent(RBTree *node) {
+	// Деда не будет у фиктивного листа (node == null) и у корня (node->Parent == null)
     if (node && node->Parent) {
+		// Возвращаем родителя родителя текущего узла
         return node->Parent->Parent;
     }
     return NULL;
 }
 
+// Найти дядю
 RBTree *uncle(RBTree *node) {
+	// Дед узла node
     RBTree *grandPar = grandParent(node);
+	// Если нет деда
     if (!grandPar) {
         return NULL;
     }
+	// Если родитель node --- левый ребенок grandPar
     if (grandPar->Left == node->Parent) {
+		// Возвращаем правого ребенка grandPar
         return grandPar->Right;
     }
+	// Возвращаем левого ребенка grandPar
     return grandPar->Left;
 }
-
+// Найти брата
 RBTree *sibling(RBTree *node) {
+	// Если существует node и его Parent
     if (node && node->Parent) {
+		// Если node левый ребенок
         if (node->Parent->Left == node) {
+			// Возвращаем правого ребенка
             return node->Parent->Right;
         }
+		// Возвращаем левого ребенка
         return node->Parent->Left;
     }
     return NULL;
