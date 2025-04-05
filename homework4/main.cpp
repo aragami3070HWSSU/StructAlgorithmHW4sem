@@ -15,7 +15,7 @@ struct RBTree {
 };
 
 // Создание корня (черный)
-RBTree *root(int x) {
+RBTree *Root(int x) {
     RBTree *n = new RBTree;
     n->Parent = n->Left = n->Right = NULL;
     n->Color = Black;
@@ -88,7 +88,7 @@ void RightTurn(RBTree *&tr, RBTree *node) {
 }
 
 // Найти деда
-RBTree *grandParent(RBTree *node) {
+RBTree *GrandParent(RBTree *node) {
 	// Деда не будет у фиктивного листа (node == null) и у корня (node->Parent == null)
     if (node && node->Parent) {
 		// Возвращаем родителя родителя текущего узла
@@ -98,23 +98,23 @@ RBTree *grandParent(RBTree *node) {
 }
 
 // Найти дядю
-RBTree *uncle(RBTree *node) {
+RBTree *Uncle(RBTree *node) {
 	// Дед узла node
-    RBTree *grandPar = grandParent(node);
+    RBTree *grandParent = GrandParent(node);
 	// Если нет деда
-    if (!grandPar) {
+    if (!grandParent) {
         return NULL;
     }
 	// Если родитель node --- левый ребенок grandPar
-    if (grandPar->Left == node->Parent) {
+    if (grandParent->Left == node->Parent) {
 		// Возвращаем правого ребенка grandPar
-        return grandPar->Right;
+        return grandParent->Right;
     }
 	// Возвращаем левого ребенка grandPar
-    return grandPar->Left;
+    return grandParent->Left;
 }
 // Найти брата
-RBTree *sibling(RBTree *node) {
+RBTree *Sibling(RBTree *node) {
 	// Если существует node и его Parent
     if (node && node->Parent) {
 		// Если node левый ребенок
@@ -128,85 +128,85 @@ RBTree *sibling(RBTree *node) {
     return NULL;
 }
 
-void insert_case1(RBTree *&tr, RBTree *node);
-void insert_case2(RBTree *&tr, RBTree *node);
-void insert_case3(RBTree *&tr, RBTree *node);
-void insert_case4(RBTree *&tr, RBTree *node);
-void insert_case5(RBTree *&tr, RBTree *node);
+void InsertCase1(RBTree *&tr, RBTree *node);
+void InsertCase2(RBTree *&tr, RBTree *node);
+void InsertCase3(RBTree *&tr, RBTree *node);
+void InsertCase4(RBTree *&tr, RBTree *node);
+void InsertCase5(RBTree *&tr, RBTree *node);
 
-void insert_case1(RBTree *&tr, RBTree *node) {
+void InsertCase1(RBTree *&tr, RBTree *node) {
     if (!node->Parent) {
         node->Color = Black;
     }
     else {
-        insert_case2(tr, node);
+        InsertCase2(tr, node);
     }
 }
 
-void insert_case2(RBTree *&tr, RBTree *node) {
+void InsertCase2(RBTree *&tr, RBTree *node) {
     if (node->Parent->Color == Black) {
         return;
     }
-    insert_case3(tr, node);
+    InsertCase3(tr, node);
 }
 
-void insert_case3(RBTree *&tr, RBTree *node) {
-    RBTree *u = uncle(node);
-    RBTree *g = grandParent(node);
-    if (u && u->Color == Red && node->Parent->Color == Red) {
-        u->Color = Black;
+void InsertCase3(RBTree *&tr, RBTree *node) {
+    RBTree *uncle = Uncle(node);
+    RBTree *grandParent = GrandParent(node);
+    if (uncle && uncle->Color == Red && node->Parent->Color == Red) {
+        uncle->Color = Black;
         node->Parent->Color = Black;
-        g->Color = Red;
-        insert_case1(tr, g);
+        grandParent->Color = Red;
+        InsertCase1(tr, grandParent);
     }
     else {
-        insert_case4(tr, node);
+        InsertCase4(tr, node);
     }
 }
 
-void insert_case4(RBTree *&tr, RBTree *node) {
-    RBTree *g = grandParent(node);
-    if (node->Parent->Right == node && g->Left == node->Parent) {
+void InsertCase4(RBTree *&tr, RBTree *node) {
+    RBTree *grandParent = GrandParent(node);
+    if (node->Parent->Right == node && grandParent->Left == node->Parent) {
         LeftTurn(tr, node->Parent);
         node = node->Left;
     }
     else {
-        if (node->Parent->Left == node && g->Right == node->Parent) {
+        if (node->Parent->Left == node && grandParent->Right == node->Parent) {
             RightTurn(tr, node->Parent);
             node = node->Right;
         }
     }
-    insert_case5(tr, node);
+    InsertCase5(tr, node);
 }
 
-void insert_case5(RBTree *&tr, RBTree *node) {
-    RBTree *g = grandParent(node);
-    g->Color = Red;
+void InsertCase5(RBTree *&tr, RBTree *node) {
+    RBTree *grandParent = GrandParent(node);
+    grandParent->Color = Red;
     node->Parent->Color = Black;
-    if (node == node->Parent->Left && g->Left == node->Parent) {
-        RightTurn(tr, g);
+    if (node == node->Parent->Left && grandParent->Left == node->Parent) {
+        RightTurn(tr, grandParent);
     }
     else {
-        LeftTurn(tr, g);
+        LeftTurn(tr, grandParent);
     }
 }
 
-void insert(RBTree *&tr, RBTree *prev, int node) {
+void Insert(RBTree *&tr, RBTree *prev, int node) {
     if (node < prev->Value && !prev->Left) {
         prev->Left = Node(prev, node);
-        insert_case1(tr, prev->Left);
+        InsertCase1(tr, prev->Left);
         return;
     }
     if (node > prev->Value && !prev->Right) {
         prev->Right = Node(prev, node);
-        insert_case1(tr, prev->Right);
+        InsertCase1(tr, prev->Right);
         return;
     }
     if (node < prev->Value && prev->Left) {
-        insert(tr, prev->Left, node);
+        Insert(tr, prev->Left, node);
     }
     if (node > prev->Value && prev->Right) {
-        insert(tr, prev->Right, node);
+        Insert(tr, prev->Right, node);
     }
 }
 
@@ -232,7 +232,7 @@ void delete_case1(RBTree *&tr, RBTree *n) {
 }
 
 void delete_case2(RBTree *&tr, RBTree *n) {
-    RBTree *s = sibling(n);
+    RBTree *s = Sibling(n);
     if (s && s->Color == Red) {
         n->Parent->Color = Red;
         s->Color = Black;
@@ -247,7 +247,7 @@ void delete_case2(RBTree *&tr, RBTree *n) {
 }
 
 void delete_case3(RBTree *&tr, RBTree *n) {
-    RBTree *s = sibling(n);
+    RBTree *s = Sibling(n);
     if (s && n->Parent->Color == Black && s->Color == Black &&
         (!s->Left || s->Left->Color == Black) &&
         (!s->Right || s->Right->Color == Black)) {
@@ -260,7 +260,7 @@ void delete_case3(RBTree *&tr, RBTree *n) {
 }
 
 void delete_case4(RBTree *&tr, RBTree *n) {
-    RBTree *s = sibling(n);
+    RBTree *s = Sibling(n);
     if (n->Parent->Color == Red && s && s->Color == Black &&
         (!s->Left || s->Left->Color == Black) &&
         (!s->Right || s->Right->Color == Black)) {
@@ -273,7 +273,7 @@ void delete_case4(RBTree *&tr, RBTree *n) {
 }
 
 void delete_case5(RBTree *&tr, RBTree *n) {
-    RBTree *s = sibling(n);
+    RBTree *s = Sibling(n);
     if (s->Color == Black) {
         if (s && n->Parent->Left == n && (!s->Left || s->Left->Color == Red) &&
             (!s->Right || s->Right->Color == Black)) {
@@ -295,7 +295,7 @@ void delete_case5(RBTree *&tr, RBTree *n) {
 }
 
 void delete_case6(RBTree *&tr, RBTree *n) {
-    RBTree *s = sibling(n);
+    RBTree *s = Sibling(n);
     s->Color = n->Parent->Color;
     n->Parent->Color = Black;
     if (n->Parent->Left == n) {
@@ -467,12 +467,12 @@ int main() {
 		// Если нет корня
         if (i == 0) {
 			// То создаем корень
-            tr = root(x);
+            tr = Root(x);
         }
 		// Если есть корень
         else {
 			// То создаем узел
-            insert(tr, tr, x);
+            Insert(tr, tr, x);
         }
     }
 
