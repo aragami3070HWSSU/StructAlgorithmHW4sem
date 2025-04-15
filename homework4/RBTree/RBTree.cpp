@@ -23,9 +23,6 @@ void LeftTurn(RBTree *&tr, RBTree *node) {
     RBTree *rightChild = node->Right;
     node->Right = rightChild->Left;
 
-    // if (rightChild->Left) {
-    //     rightChild->Parent = node;
-    // }
 
     if (rightChild->Right != nullptr) {
         if (rightChild->Right->Right != nullptr ||
@@ -37,11 +34,7 @@ void LeftTurn(RBTree *&tr, RBTree *node) {
     // Родителем для rightChild становится родитель node
     rightChild->Parent = node->Parent;
 
-    if (!rightChild->Parent) {
-        tr = rightChild;
-        tr->Color = Black;
-    }
-    else if (node->Parent) {
+    if (node->Parent) {
         if (node == node->Parent->Left) {
             node->Parent->Left = rightChild;
         }
@@ -52,6 +45,10 @@ void LeftTurn(RBTree *&tr, RBTree *node) {
     // Вот эта дрисня правильная
     rightChild->Left = node;
     node->Parent = rightChild;
+    if (!rightChild->Parent) {
+        tr = rightChild;
+        tr->Color = Black;
+    }
 }
 
 // Левый поворот
@@ -86,9 +83,6 @@ void RightTurn(RBTree *&tr, RBTree *node) {
     RBTree *leftChild = node->Left;
     node->Left = leftChild->Right;
 
-    // if (leftChild->Right) {
-    //     leftChild->Parent = node;
-    // }
 
     if (leftChild->Left != nullptr) {
         if (leftChild->Left->Left != nullptr ||
@@ -100,11 +94,7 @@ void RightTurn(RBTree *&tr, RBTree *node) {
     // Родителем для leftChild становится родитель node
     leftChild->Parent = node->Parent;
 
-    if (!leftChild->Parent) {
-        tr = leftChild;
-        tr->Color = Black;
-    }
-    else if (node->Parent) {
+    if (node->Parent) {
         if (node == node->Parent->Left) {
             node->Parent->Left = leftChild;
         }
@@ -114,6 +104,10 @@ void RightTurn(RBTree *&tr, RBTree *node) {
     }
     leftChild->Right = node;
     node->Parent = leftChild;
+    if (!leftChild->Parent) {
+        tr = leftChild;
+        tr->Color = Black;
+    }
 }
 
 // Код Ангелины
