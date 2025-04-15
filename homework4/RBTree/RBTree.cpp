@@ -27,17 +27,21 @@ void LeftTurn(RBTree *&tr, RBTree *node) {
     //     rightChild->Parent = node;
     // }
 
-    if (rightChild->Left != nullptr) {
-        if (rightChild->Left->Right != nullptr ||
-            rightChild->Left->Left != nullptr) {
+    if (rightChild->Right != nullptr) {
+        if (rightChild->Right->Right != nullptr ||
+            rightChild->Right->Left != nullptr) {
 
-            rightChild->Left->Parent = node;
+            rightChild->Right->Parent = node;
         }
     }
     // Родителем для rightChild становится родитель node
     rightChild->Parent = node->Parent;
 
-    if (node->Parent) {
+    if (!rightChild->Parent) {
+        tr = rightChild;
+        tr->Color = Black;
+    }
+    else if (node->Parent) {
         if (node == node->Parent->Left) {
             node->Parent->Left = rightChild;
         }
@@ -48,10 +52,6 @@ void LeftTurn(RBTree *&tr, RBTree *node) {
     // Вот эта дрисня правильная
     rightChild->Left = node;
     node->Parent = rightChild;
-    if (!rightChild->Parent) {
-        tr = rightChild;
-        tr->Color = Black;
-    }
 }
 
 // Левый поворот
@@ -90,17 +90,21 @@ void RightTurn(RBTree *&tr, RBTree *node) {
     //     leftChild->Parent = node;
     // }
 
-    if (leftChild->Right != nullptr) {
-        if (leftChild->Right->Left != nullptr ||
-            leftChild->Right->Right != nullptr) {
+    if (leftChild->Left != nullptr) {
+        if (leftChild->Left->Left != nullptr ||
+            leftChild->Left->Right != nullptr) {
 
-            leftChild->Right->Parent = node;
+            leftChild->Left->Parent = node;
         }
     }
     // Родителем для leftChild становится родитель node
     leftChild->Parent = node->Parent;
 
-    if (node->Parent) {
+    if (!leftChild->Parent) {
+        tr = leftChild;
+        tr->Color = Black;
+    }
+    else if (node->Parent) {
         if (node == node->Parent->Left) {
             node->Parent->Left = leftChild;
         }
@@ -110,10 +114,6 @@ void RightTurn(RBTree *&tr, RBTree *node) {
     }
     leftChild->Right = node;
     node->Parent = leftChild;
-    if (!leftChild->Parent) {
-        tr = leftChild;
-        tr->Color = Black;
-    }
 }
 
 // Код Ангелины
@@ -307,8 +307,11 @@ void DeleteCase2(RBTree *&tr, RBTree *node) {
 void DeleteCase3(RBTree *&tr, RBTree *node) {
     RBTree *sibling = Sibling(node);
     if (sibling && node->Parent->Color == Black && sibling->Color == Black &&
-        ((sibling->Left->Right == nullptr && sibling->Left->Left == nullptr) || sibling->Left->Color == Black) &&
-        ((sibling->Right->Right == nullptr && sibling->Right->Left == nullptr) || sibling->Right->Color == Black)) {
+        ((sibling->Left->Right == nullptr && sibling->Left->Left == nullptr) ||
+         sibling->Left->Color == Black) &&
+        ((sibling->Right->Right == nullptr &&
+          sibling->Right->Left == nullptr) ||
+         sibling->Right->Color == Black)) {
         sibling->Color = Red;
         DeleteCase1(tr, node);
     }
@@ -320,8 +323,11 @@ void DeleteCase3(RBTree *&tr, RBTree *node) {
 void DeleteCase4(RBTree *&tr, RBTree *node) {
     RBTree *sibling = Sibling(node);
     if (node->Parent->Color == Red && sibling && sibling->Color == Black &&
-        ((sibling->Left->Right == nullptr && sibling->Left->Left == nullptr) || sibling->Left->Color == Black) &&
-        ((sibling->Right->Right == nullptr && sibling->Right->Left == nullptr) || sibling->Right->Color == Black)) {
+        ((sibling->Left->Right == nullptr && sibling->Left->Left == nullptr) ||
+         sibling->Left->Color == Black) &&
+        ((sibling->Right->Right == nullptr &&
+          sibling->Right->Left == nullptr) ||
+         sibling->Right->Color == Black)) {
         sibling->Color = Red;
         node->Parent->Color = Black;
     }
@@ -333,18 +339,27 @@ void DeleteCase4(RBTree *&tr, RBTree *node) {
 void DeleteCase5(RBTree *&tr, RBTree *node) {
     RBTree *sibling = Sibling(node);
     if (sibling->Color == Black) {
-		// возможно там не &&, а || как и в других примерах строка 338 символ 79
+        // возможно там не &&, а || как и в других примерах строка 345 символ 48
+        // (&& перед проверкой на RED)
         if (sibling && node->Parent->Left == node &&
-        ((sibling->Left->Right != nullptr || sibling->Left->Left != nullptr) && sibling->Left->Color == Red) &&
-        ((sibling->Right->Right == nullptr && sibling->Right->Left == nullptr) || sibling->Right->Color == Black)) {
+            ((sibling->Left->Right != nullptr ||
+              sibling->Left->Left != nullptr) &&
+             sibling->Left->Color == Red) &&
+            ((sibling->Right->Right == nullptr &&
+              sibling->Right->Left == nullptr) ||
+             sibling->Right->Color == Black)) {
             sibling->Color = Red;
             sibling->Left->Color = Black;
             RightTurn(tr, sibling);
         }
         else {
             if (sibling && node->Parent->Right == node &&
-        ((sibling->Right->Right != nullptr || sibling->Right->Left != nullptr) && sibling->Right->Color == Red) &&
-        ((sibling->Left->Right == nullptr && sibling->Left->Left == nullptr) || sibling->Left->Color == Black)) {
+                ((sibling->Right->Right != nullptr ||
+                  sibling->Right->Left != nullptr) &&
+                 sibling->Right->Color == Red) &&
+                ((sibling->Left->Right == nullptr &&
+                  sibling->Left->Left == nullptr) ||
+                 sibling->Left->Color == Black)) {
                 sibling->Color = Red;
                 sibling->Right->Color = Black;
                 LeftTurn(tr, sibling);
@@ -368,23 +383,39 @@ void DeleteCase6(RBTree *&tr, RBTree *node) {
     }
 }
 
-void Replace(RBTree *&tr, RBTree *node, RBTree *child) {
-    // Делаем ребёнка вершины node ребёнком деда
-    child->Parent = node->Parent;
-    if (node->Parent) {
-        if (node == node->Parent->Left) {
-            node->Parent->Left = child;
-        }
-        else {
-            node->Parent->Right = child;
+void Replace(RBTree *&tr, RBTree *node) {
+    if (node->Left != nullptr) {
+        RBTree *child = node->Left;
+
+        // Родителем узла child становится родитель узла node
+        child->Parent = node->Parent;
+        if (node->Parent != nullptr) {
+            if (node == node->Parent->Left) {
+                node->Parent->Left = child;
+            }
+            else {
+                node->Parent->Right = child;
+            }
         }
     }
     else {
-        tr = child;
+        RBTree *child = node->Right;
+
+        // Родителем узла child становится родитель узла node
+        child->Parent = node->Parent;
+        if (node->Parent != nullptr) {
+            if (node == node->Parent->Left) {
+                node->Parent->Left = child;
+            }
+            else {
+                node->Parent->Right = child;
+            }
+        }
     }
 }
 
 void DeleteOne(RBTree *&tr, RBTree *node) {
+    // 2 ребенка
     if (node->Left && node->Right) {
         RBTree *buf = node->Left;
         while (buf->Right) {
@@ -402,7 +433,7 @@ void DeleteOne(RBTree *&tr, RBTree *node) {
         else {
             child = node->Right;
         }
-        Replace(tr, node, child); // child - ребёнок деда
+        Replace(tr, node); // child - ребёнок деда
         if (node->Color == Black) {
             // Всегда n - чёрный, ребёнок - красный
             if (child->Color == Red) {
