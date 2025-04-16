@@ -1,4 +1,5 @@
 #include "RBTree.h"
+#include <iostream>
 
 // Создание корня (черный)
 RBTree *Root(int x) {
@@ -506,6 +507,16 @@ void MaxHeight(RBTree *x, short &max, short deepness) {
     }
 }
 
+std::string FormatNode(RBTree *node) {
+    if (!node)
+        return "    ";
+    std::string val = std::to_string(node->Value);
+    if (node->Color == Red)
+        return "R" + val + std::string(4 - val.size(), ' ');
+    else
+        return "B" + val + std::string(4 - val.size(), ' ');
+}
+
 void PrintHelper(RBTree ***arr, RBTree *x, const short deepness,
                  const short ind) {
     arr[deepness][ind] = x;
@@ -533,10 +544,12 @@ void Print(RBTree *x) {
         PrintHelper(arr, x);
         for (short i = 0; i < max; ++i) {
             std::cout << std::setw((offset >> 1) + 1);
-            arr[i][0] ? std::cout << arr[i][0]->Value : std::cout << ' ';
+            std::cout << FormatNode(arr[i][0]);
+            // arr[i][0] ? std::cout << arr[i][0]->Value : std::cout << ' ';
             for (short j = 1; j < width; ++j) {
                 std::cout << std::setw(offset);
-                arr[i][j] ? std::cout << arr[i][j]->Value : std::cout << ' ';
+                std::cout << FormatNode(arr[i][j]);
+                // arr[i][j] ? std::cout << arr[i][j]->Value : std::cout << ' ';
             }
             offset >>= 1;
             width <<= 1;
