@@ -25,7 +25,7 @@ void LeftTurn(RBTree *&tr, RBTree *node) {
     node->Right = rightChild->Left;
 
     if (rightChild->Left != nullptr) {
-            rightChild->Left->Parent = node;
+        rightChild->Left->Parent = node;
     }
     // Родителем для rightChild становится родитель node
     rightChild->Parent = node->Parent;
@@ -81,7 +81,7 @@ void RightTurn(RBTree *&tr, RBTree *node) {
 
     if (leftChild->Right != nullptr) {
 
-            leftChild->Right->Parent = node;
+        leftChild->Right->Parent = node;
     }
     // Родителем для leftChild становится родитель node
     leftChild->Parent = node->Parent;
@@ -269,7 +269,6 @@ void DeleteCase1(RBTree *&tr, RBTree *node) {
         else {
             tr = node->Right;
         }
-		tr->Color = Black;
     }
     else {
         DeleteCase2(tr, node);
@@ -278,7 +277,7 @@ void DeleteCase1(RBTree *&tr, RBTree *node) {
 
 void DeleteCase2(RBTree *&tr, RBTree *node) {
     RBTree *sibling = Sibling(node);
-    if (sibling && sibling->Color == Red) {
+    if (sibling->Color == Red) {
         node->Parent->Color = Red;
         sibling->Color = Black;
         if (node->Parent->Left == node) {
@@ -294,11 +293,8 @@ void DeleteCase2(RBTree *&tr, RBTree *node) {
 void DeleteCase3(RBTree *&tr, RBTree *node) {
     RBTree *sibling = Sibling(node);
     if (sibling && node->Parent->Color == Black && sibling->Color == Black &&
-        ((sibling->Left->Right == nullptr && sibling->Left->Left == nullptr) ||
-         sibling->Left->Color == Black) &&
-        ((sibling->Right->Right == nullptr &&
-          sibling->Right->Left == nullptr) ||
-         sibling->Right->Color == Black)) {
+        ((!sibling->Left) || sibling->Left->Color == Black) &&
+        ((!sibling->Right) || sibling->Right->Color == Black)) {
         sibling->Color = Red;
         DeleteCase1(tr, node);
     }
@@ -309,12 +305,10 @@ void DeleteCase3(RBTree *&tr, RBTree *node) {
 
 void DeleteCase4(RBTree *&tr, RBTree *node) {
     RBTree *sibling = Sibling(node);
-    if (node->Parent->Color == Red && sibling && sibling->Color == Black &&
-        ((sibling->Left->Right == nullptr && sibling->Left->Left == nullptr) ||
-         sibling->Left->Color == Black) &&
-        ((sibling->Right->Right == nullptr &&
-          sibling->Right->Left == nullptr) ||
-         sibling->Right->Color == Black)) {
+
+    if (sibling && node->Parent->Color == Red && sibling->Color == Black &&
+        ((!sibling->Left) || sibling->Left->Color == Black) &&
+        ((!sibling->Right) || sibling->Right->Color == Black)) {
         sibling->Color = Red;
         node->Parent->Color = Black;
     }
@@ -325,28 +319,18 @@ void DeleteCase4(RBTree *&tr, RBTree *node) {
 
 void DeleteCase5(RBTree *&tr, RBTree *node) {
     RBTree *sibling = Sibling(node);
-    if (sibling->Color == Black) {
-        // возможно там не &&, а || как и в других примерах строка 345 символ 48
-        // (&& перед проверкой на RED)
-        if (sibling && node->Parent->Left == node &&
-            ((sibling->Left->Right != nullptr ||
-              sibling->Left->Left != nullptr) &&
-             sibling->Left->Color == Red) &&
-            ((sibling->Right->Right == nullptr &&
-              sibling->Right->Left == nullptr) ||
-             sibling->Right->Color == Black)) {
+    if (sibling && sibling->Color == Black) {
+        if (node->Parent->Left == node &&
+            ((sibling->Left) && sibling->Left->Color == Red) &&
+            ((!sibling->Right) || sibling->Right->Color == Black)) {
             sibling->Color = Red;
             sibling->Left->Color = Black;
             RightTurn(tr, sibling);
         }
         else {
-            if (sibling && node->Parent->Right == node &&
-                ((sibling->Right->Right != nullptr ||
-                  sibling->Right->Left != nullptr) &&
-                 sibling->Right->Color == Red) &&
-                ((sibling->Left->Right == nullptr &&
-                  sibling->Left->Left == nullptr) ||
-                 sibling->Left->Color == Black)) {
+            if (node->Parent->Right == node &&
+                ((sibling->Right) && sibling->Right->Color == Red) &&
+                ((!sibling->Left) || sibling->Left->Color == Black)) {
                 sibling->Color = Red;
                 sibling->Right->Color = Black;
                 LeftTurn(tr, sibling);
@@ -358,15 +342,19 @@ void DeleteCase5(RBTree *&tr, RBTree *node) {
 
 void DeleteCase6(RBTree *&tr, RBTree *node) {
     RBTree *sibling = Sibling(node);
-    sibling->Color = node->Parent->Color;
-    node->Parent->Color = Black;
-    if (node->Parent->Left == node) {
-        sibling->Right->Color = Black;
-        LeftTurn(tr, node->Parent);
-    }
-    else {
-        sibling->Left->Color = Black;
-        RightTurn(tr, node->Parent);
+    if (sibling) {
+
+        sibling->Color = node->Parent->Color;
+
+        node->Parent->Color = Black;
+        if (node->Parent->Left == node) {
+            sibling->Right->Color = Black;
+            LeftTurn(tr, node->Parent);
+        }
+        else {
+            sibling->Left->Color = Black;
+            RightTurn(tr, node->Parent);
+        }
     }
 }
 
@@ -420,18 +408,18 @@ void DeleteOne(RBTree *&tr, RBTree *node) {
         std::swap(buf->Value, node->Value);
         node = buf;
     }
-    // Всегда 1 или 0 детей
+    // 1 ребенок
     if (node->Left || node->Right) {
-        RBTree *child;
-        if (node->Left) {
+        RBTree *child = nullptr;
+        if (node->Left && !node->Right) {
             child = node->Left;
         }
-        else {
+        if (node->Right && !node->Left) {
             child = node->Right;
         }
         Replace(tr, node); // child - ребёнок деда
         if (node->Color == Black) {
-            // Всегда n - чёрный, ребёнок - красный
+            // Всегда node - чёрный, ребёнок - красный
             if (child->Color == Red) {
                 child->Color = Black;
             }
@@ -456,12 +444,7 @@ void DeleteOne(RBTree *&tr, RBTree *node) {
             }
         }
     }
-    if (node->Parent != nullptr) {
-        RBTree *buf = node;
-        while (buf->Parent) {
-            buf = buf->Parent;
-        }
-        tr = buf;
+    if (!node->Left && !node->Right) {
         if (node == node->Parent->Left) {
             node->Parent->Left = nullptr;
         }
@@ -493,17 +476,19 @@ void MaxHeight(RBTree *x, short &max, short deepness) {
     if (deepness > max) {
         max = deepness;
     }
-    if (x->Left) {
-        MaxHeight(x->Left, max, deepness + 1);
-    }
-    if (x->Right) {
-        MaxHeight(x->Right, max, deepness + 1);
+    if (x) {
+        if (x->Left) {
+            MaxHeight(x->Left, max, deepness + 1);
+        }
+        if (x->Right) {
+            MaxHeight(x->Right, max, deepness + 1);
+        }
     }
 }
 
 std::string FormatNode(RBTree *node) {
     if (!node)
-        return "    ";
+        return "     ";
     std::string val = std::to_string(node->Value);
     if (node->Color == Red)
         return "R" + val + std::string(4 - val.size(), ' ');
