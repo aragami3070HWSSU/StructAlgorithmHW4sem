@@ -23,7 +23,6 @@ void LeftTurn(RBTree *&tr, RBTree *node) {
     RBTree *rightChild = node->Right;
     node->Right = rightChild->Left;
 
-
     if (rightChild->Right != nullptr) {
         if (rightChild->Right->Right != nullptr ||
             rightChild->Right->Left != nullptr) {
@@ -82,7 +81,6 @@ void LeftTurn(RBTree *&tr, RBTree *node) {
 void RightTurn(RBTree *&tr, RBTree *node) {
     RBTree *leftChild = node->Left;
     node->Left = leftChild->Right;
-
 
     if (leftChild->Left != nullptr) {
         if (leftChild->Left->Left != nullptr ||
@@ -284,10 +282,10 @@ void DeleteCase1(RBTree *&tr, RBTree *node) {
 }
 
 void DeleteCase2(RBTree *&tr, RBTree *node) {
-    RBTree *s = Sibling(node);
-    if (s && s->Color == Red) {
+    RBTree *sibling = Sibling(node);
+    if (sibling && sibling->Color == Red) {
         node->Parent->Color = Red;
-        s->Color = Black;
+        sibling->Color = Black;
         if (node->Parent->Left == node) {
             LeftTurn(tr, node->Parent);
         }
@@ -411,9 +409,18 @@ void Replace(RBTree *&tr, RBTree *node) {
 void DeleteOne(RBTree *&tr, RBTree *node) {
     // 2 ребенка
     if (node->Left && node->Right) {
-        RBTree *buf = node->Left;
-        while (buf->Right) {
-            buf = buf->Right;
+        RBTree *buf;
+        if (node->Value <= tr->Value) {
+            buf = node->Left;
+            while (buf->Right) {
+                buf = buf->Right;
+            }
+        }
+        else {
+            buf = node->Right;
+            while (buf->Left) {
+                buf = buf->Left;
+            }
         }
         std::swap(buf->Value, node->Value);
         node = buf;
@@ -432,6 +439,9 @@ void DeleteOne(RBTree *&tr, RBTree *node) {
             // Всегда n - чёрный, ребёнок - красный
             if (child->Color == Red) {
                 child->Color = Black;
+            }
+            else {
+                DeleteCase1(tr, node);
             }
         }
     }
