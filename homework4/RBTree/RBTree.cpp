@@ -24,12 +24,8 @@ void LeftTurn(RBTree *&tr, RBTree *node) {
     RBTree *rightChild = node->Right;
     node->Right = rightChild->Left;
 
-    if (rightChild->Right != nullptr) {
-        if (rightChild->Right->Right != nullptr ||
-            rightChild->Right->Left != nullptr) {
-
-            rightChild->Right->Parent = node;
-        }
+    if (rightChild->Left != nullptr) {
+            rightChild->Left->Parent = node;
     }
     // Родителем для rightChild становится родитель node
     rightChild->Parent = node->Parent;
@@ -83,12 +79,9 @@ void RightTurn(RBTree *&tr, RBTree *node) {
     RBTree *leftChild = node->Left;
     node->Left = leftChild->Right;
 
-    if (leftChild->Left != nullptr) {
-        if (leftChild->Left->Left != nullptr ||
-            leftChild->Left->Right != nullptr) {
+    if (leftChild->Right != nullptr) {
 
-            leftChild->Left->Parent = node;
-        }
+            leftChild->Right->Parent = node;
     }
     // Родителем для leftChild становится родитель node
     leftChild->Parent = node->Parent;
@@ -276,6 +269,7 @@ void DeleteCase1(RBTree *&tr, RBTree *node) {
         else {
             tr = node->Right;
         }
+		tr->Color = Black;
     }
     else {
         DeleteCase2(tr, node);
