@@ -1,7 +1,5 @@
 #include "AVLTree.h"
 
-#include <algorithm>
-
 template <typename T> int AVLTree<T>::Height(AVLNode<T> *node) {
     if (node == nullptr)
         return 0;
@@ -14,50 +12,58 @@ template <typename T> int AVLTree<T>::BalanceFactor(AVLNode<T> *node) {
     return Height(node->Left) - Height(node->Right);
 }
 
-template <typename T> AVLNode<T> *AVLTree<T>::RightRotate(AVLNode<T> *y) {
-    AVLNode<T> *x = y->Left;
-    AVLNode<T> *T2 = x->Right;
+template <typename T> AVLNode<T> *AVLTree<T>::RightRotate(AVLNode<T> *node) {
+    AVLNode<T> *leftNode = node->Left;
+    AVLNode<T> *T2 = leftNode->Right;
 
-    x->Right = y;
-    y->Left = T2;
+    leftNode->Right = node;
+    node->Left = T2;
 
-    y->Height = std::max(Height(y->Left), Height(y->Right)) + 1;
-    x->Height = std::max(Height(x->Left), Height(x->Right)) + 1;
+    node->Height = std::max(Height(node->Left), Height(node->Right)) + 1;
+    leftNode->Height =
+        std::max(Height(leftNode->Left), Height(leftNode->Right)) + 1;
 
-    return x;
+    return leftNode;
 }
 
-template <typename T> AVLNode<T> *AVLTree<T>::LeftRotate(AVLNode<T> *x) {
-    AVLNode<T> *y = x->Right;
-    AVLNode<T> *T2 = y->Left;
+template <typename T> AVLNode<T> *AVLTree<T>::LeftRotate(AVLNode<T> *node) {
+    AVLNode<T> *rightChild = node->Right;
+    AVLNode<T> *T2 = rightChild->Left;
 
-    y->Left = x;
-    x->Right = T2;
+    rightChild->Left = node;
+    node->Right = T2;
 
-    x->Height = std::max(Height(x->Left), Height(x->Right)) + 1;
-    y->Height = std::max(Height(y->Left), Height(y->Right)) + 1;
+    node->Height = std::max(Height(node->Left), Height(node->Right)) + 1;
+    rightChild->Height =
+        std::max(Height(rightChild->Left), Height(rightChild->Right)) + 1;
 
-    return y;
+    return rightChild;
 }
 
 template <typename T> AVLNode<T> *AVLTree<T>::Insert(AVLNode<T> *node, T key) {
-    if (node == nullptr)
+    if (node == nullptr) {
         return new AVLNode<T>(key);
-    if (key < node->Value)
+    }
+    if (key < node->Value) {
         node->Left = Insert(node->Left, key);
-    else if (key > node->Value)
+    }
+    else if (key > node->Value) {
         node->Right = Insert(node->Right, key);
-    else
+    }
+    else {
         return node;
+    }
 
     node->Height = 1 + std::max(Height(node->Left), Height(node->Right));
     int balance = BalanceFactor(node);
 
-    if (balance > 1 && key < node->Left->Value)
+    if (balance > 1 && key < node->Left->Value) {
         return RightRotate(node);
+    }
 
-    if (balance < -1 && key > node->Right->Value)
+    if (balance < -1 && key > node->Right->Value) {
         return LeftRotate(node);
+    }
 
     if (balance > 1 && key > node->Left->Value) {
         node->Left = LeftRotate(node->Left);
@@ -89,8 +95,9 @@ void AVLTree<T>::PrintHelper(AVLNode<T> *root, std::string indent, bool last) {
     }
 }
 template <typename T> void AVLTree<T>::Print() {
-    if (root == nullptr)
+    if (root == nullptr) {
         std::cout << "Дерево пустое." << std::endl;
+    }
     else {
         std::cout << "AVL дерево:" << std::endl;
         PrintHelper(root, "", true);
