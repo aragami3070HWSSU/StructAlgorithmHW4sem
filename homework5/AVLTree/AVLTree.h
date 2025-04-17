@@ -2,12 +2,12 @@
 #include <string>
 template <typename T> class AVLNode {
   public:
-    T Key;
+    T Value;
     AVLNode *Left;
     AVLNode *Right;
     int Height;
 
-    AVLNode(T k) : Key(k), Left(nullptr), Right(nullptr), Height(1) {
+    AVLNode(T k) : Value(k), Left(nullptr), Right(nullptr), Height(1) {
     }
 };
 
