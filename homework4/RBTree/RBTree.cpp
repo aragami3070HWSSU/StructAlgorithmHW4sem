@@ -393,18 +393,22 @@ void DeleteOne(RBTree *&tr, RBTree *node) {
     // 2 ребенка
     if (node->Left && node->Right) {
         RBTree *buf;
-        if (node->Value <= tr->Value) {
-            buf = node->Left;
-            while (buf->Right) {
-                buf = buf->Right;
-            }
+        buf = node->Left;
+        while (buf->Right) {
+            buf = buf->Right;
         }
-        else {
-            buf = node->Right;
-            while (buf->Left) {
-                buf = buf->Left;
-            }
-        }
+        // if (node->Value <= tr->Value) {
+        //     buf = node->Right;
+        //     while (buf->Right) {
+        //         buf = buf->Right;
+        //     }
+        // }
+        // else {
+        //     buf = node->Left;
+        //     while (buf->Left) {
+        //         buf = buf->Left;
+        //     }
+        // }
         std::swap(buf->Value, node->Value);
         node = buf;
     }
@@ -488,12 +492,12 @@ void MaxHeight(RBTree *x, short &max, short deepness) {
 
 std::string FormatNode(RBTree *node) {
     if (!node)
-        return "     ";
+        return "    ";
     std::string val = std::to_string(node->Value);
     if (node->Color == Red)
-        return "R" + val + std::string(4 - val.size(), ' ');
+        return "R" + val + std::string(3 - val.size(), ' ');
     else
-        return "B" + val + std::string(4 - val.size(), ' ');
+        return "B" + val + std::string(3 - val.size(), ' ');
 }
 
 void PrintHelper(RBTree ***arr, RBTree *x, const short deepness,
