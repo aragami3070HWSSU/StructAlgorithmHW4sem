@@ -38,7 +38,6 @@ void LeftTurn(RBTree *&tr, RBTree *node) {
             node->Parent->Right = rightChild;
         }
     }
-    // Вот эта дрисня правильная
     rightChild->Left = node;
     node->Parent = rightChild;
     if (!rightChild->Parent) {
@@ -47,32 +46,6 @@ void LeftTurn(RBTree *&tr, RBTree *node) {
     }
 }
 
-// Левый поворот
-// void LeftTurn(RBTree *&tr, RBTree *node) {
-//     RBTree *rightChild = node->Right;
-//     rightChild->Parent = node->Parent;
-//     if (node->Parent) {
-//         if (node->Parent->Left == node) {
-//             node->Parent->Left = rightChild;
-//         }
-//         else {
-//             node->Parent->Right = rightChild;
-//         }
-//     }
-//     node->Right = rightChild->Left;
-//     if (rightChild->Left) {
-//         rightChild->Left->Parent = node;
-//     }
-//     if (rightChild->Left != nullptr) {
-//         rightChild->Left->Parent = node;
-//     }
-//     node->Parent = rightChild;
-//     rightChild->Left = node;
-//     if (!rightChild->Parent) {
-//         tr = rightChild;
-//         tr->Color = Black;
-//     }
-// }
 
 // Правый поворот
 void RightTurn(RBTree *&tr, RBTree *node) {
@@ -102,33 +75,6 @@ void RightTurn(RBTree *&tr, RBTree *node) {
     }
 }
 
-// Код Ангелины
-// // Правый поворот
-// void RightTurn(RBTree *&tr, RBTree *node) {
-//     RBTree *leftChild = node->Left;
-//     leftChild->Parent = node->Parent;
-//     if (node->Parent) {
-//         if (node->Parent->Left == node) {
-//             node->Parent->Left = leftChild;
-//         }
-//         else {
-//             node->Parent->Right = leftChild;
-//         }
-//     }
-//     node->Left = leftChild->Right;
-//     if (leftChild->Right) {
-//         leftChild->Parent = node;
-//     }
-//     if (leftChild->Right != nullptr) {
-//         leftChild->Right->Parent = node;
-//     }
-//     node->Parent = leftChild;
-//     leftChild->Right = node;
-//     if (!leftChild->Parent) {
-//         tr = leftChild;
-//         tr->Color = Black;
-//     }
-// }
 
 // Найти деда
 RBTree *GrandParent(RBTree *node) {
@@ -397,18 +343,6 @@ void DeleteOne(RBTree *&tr, RBTree *node) {
         while (buf->Right) {
             buf = buf->Right;
         }
-        // if (node->Value <= tr->Value) {
-        //     buf = node->Right;
-        //     while (buf->Right) {
-        //         buf = buf->Right;
-        //     }
-        // }
-        // else {
-        //     buf = node->Left;
-        //     while (buf->Left) {
-        //         buf = buf->Left;
-        //     }
-        // }
         std::swap(buf->Value, node->Value);
         node = buf;
     }
@@ -423,7 +357,7 @@ void DeleteOne(RBTree *&tr, RBTree *node) {
         }
         Replace(tr, node); // child - ребёнок деда
         if (node->Color == Black) {
-            // Всегда node - чёрный, ребёнок - красный
+            // node - чёрный, ребёнок - красный
             if (child->Color == Red) {
                 child->Color = Black;
             }
