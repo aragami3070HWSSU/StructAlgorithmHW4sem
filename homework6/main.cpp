@@ -47,9 +47,23 @@ int SubStringSearchZ(std::string text, std::string pattern) {
     std::vector<int> zf = ZFunction(pattern + '#' + text);
 
     // Проходимся по массиву
-    for (int i = pattern.length(); i < text.length() + 1; i++) {
+    for (int i = pattern.length(); i < zf.size(); i++) {
         // Если z-функция равна длине pattern, то нашли pattern
         if (zf[i] == pattern.length()) {
+            // Выводим найденный индекс
+            return i;
+        }
+    }
+    return -1;
+}
+int SubStringSearchPrefix(std::string text, std::string pattern) {
+    // Массив z-функции
+    std::vector<int> prefixArr = PrefixFunction(pattern + '#' + text);
+
+    // Проходимся по массиву
+    for (int i = pattern.length(); i < prefixArr.size(); i++) {
+        // Если z-функция равна длине pattern, то нашли pattern
+        if (prefixArr[i] == pattern.length()) {
             // Выводим найденный индекс
             return i;
         }
@@ -69,22 +83,31 @@ int main() {
     // Ищем подстроку в строке
     int test = SubStringSearchZ(str, pattern);
     std::cout << test << std::endl;
-    std::cout << str.substr(test - pattern.length() - 1, pattern.length())
-              << std::endl;
+    if (test > -1) {
+        std::cout << str.substr(test - pattern.length() - 1, pattern.length())
+                  << std::endl;
+    }
+    // Ищем подстроку в строке
+    test = SubStringSearchPrefix(str, pattern);
+    std::cout << test << std::endl;
+    if (test > -1) {
+        std::cout << str.substr(test - (pattern.length() * 2), pattern.length())
+                  << std::endl;
+    }
 
     std::vector<int> pref = PrefixFunction(pattern + '#' + str);
     std::vector<int> zf = ZFunction(pattern + '#' + str);
 
     // Вывод префикс функции
     std::cout << "Результат префикс функции:" << std::endl;
-    for (int i = 0; i < str.length(); i++) {
+    for (int i = 0; i < pref.size(); i++) {
         std::cout << pref[i] << ' ';
     }
     std::cout << std::endl;
 
     // Вывод z-функции
     std::cout << "Результат z-функции:" << std::endl;
-    for (int i = 0; i < str.length(); i++) {
+    for (int i = 0; i < pref.size(); i++) {
         std::cout << zf[i] << ' ';
     }
     std::cout << std::endl;
