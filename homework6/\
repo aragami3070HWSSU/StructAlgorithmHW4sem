@@ -42,15 +42,13 @@ std::vector<int> ZFunction(std::string str) {
     return zf;
 }
 
-int SubStringSearchZ(std::string text, std::string pattern) {
-    // Массив z-функции
+int SubStringSearch(std::string text, std::string pattern) {
+	// Массив z-функции
     std::vector<int> zf = ZFunction(pattern + '#' + text);
 
-    // Проходимся по массиву
+	// Проходимся по массиву
     for (int i = pattern.length(); i < text.length() + 1; i++) {
-        // Если z-функция равна длине pattern, то нашли pattern
         if (zf[i] == pattern.length()) {
-            // Выводим найденный индекс
             return i;
         }
     }
@@ -66,13 +64,13 @@ int main() {
     std::string pattern;
     std::cin >> pattern;
 
-    // Ищем подстроку в строке
-    int test = SubStringSearchZ(str, pattern);
+    int test = SubStringSearch(str, pattern);
     std::cout << test << std::endl;
-    std::cout << str.substr(test - pattern.length() - 1, pattern.length())
-              << std::endl;
+    std::cout << str.substr(test - pattern.length() - 1, pattern.length()) << std::endl;
 
-    std::vector<int> pref = PrefixFunction(pattern + '#' + str);
+
+        std::vector<int>
+            pref = PrefixFunction(pattern + '#' + str);
     std::vector<int> zf = ZFunction(pattern + '#' + str);
 
     // Вывод префикс функции
