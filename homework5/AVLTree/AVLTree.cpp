@@ -104,9 +104,77 @@ template <typename T> void AVLTree<T>::Print() {
     }
 }
 
+template <typename T>
+AVLNode<T> *AVLTree<T>::DeleteNode(AVLNode<T> *root, T key) {
+    // Perform standard BST delete
+    if (root == nullptr)
+        return root;
+
+    if (key < root->Value)
+        root->Left = DeleteNode(root->Left, key);
+    else if (key > root->Value)
+        root->Right = DeleteNode(root->Right, key);
+    else {
+        // Node with only one child or no child
+        if ((root->Left == nullptr) || (root->Right == nullptr)) {
+            AVLNode<T> *temp = root->Left ? root->Left : root->Right;
+            if (temp == nullptr) {
+                temp = root;
+                root = nullptr;
+            }
+            else
+                *root = *temp;
+            delete temp;
+        }
+        else {
+
+            AVLNode<T> *temp = MinValueNode(root->Right);
+            root->Value = temp->Value;
+            root->Right = DeleteNode(root->Right, temp->Value);
+        }
+    }
+
+    if (root == nullptr)
+        return root;
+
+    // Update height of the current node
+    root->Height = 1 + std::max(Height(root->Left), Height(root->Right));
+
+    // Get the balance factor of this node
+    int balance = BalanceFactor(root);
+
+    // If this node becomes unbalanced, then there are 4
+    // cases
+
+    // Left Left Case
+    if (balance > 1 && BalanceFactor(root->Left) >= 0)
+        return RightRotate(root);
+
+    // Left Right Case
+    if (balance > 1 && BalanceFactor(root->Left) < 0) {
+        root->Left = LeftRotate(root->Left);
+        return RightRotate(root);
+    }
+
+    // Right Right Case
+    if (balance < -1 && BalanceFactor(root->Right) <= 0)
+        return LeftRotate(root);
+
+    // Right Left Case
+    if (balance < -1 && BalanceFactor(root->Right) > 0) {
+        root->Right = RightRotate(root->Right);
+        return LeftRotate(root);
+    }
+
+    return root;
+}
+
 template <typename T> void AVLTree<T>::Insert(T key) {
     root = Insert(root, key);
 }
 
+template <typename T> void AVLTree<T>::Remove(T key) {
+    root = DeleteNode(root, key);
+}
+
 template class AVLTree<int>;
-template class AVLTree<float>;
