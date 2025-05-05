@@ -104,6 +104,13 @@ template <typename T> void AVLTree<T>::Print() {
     }
 }
 
+template <typename T> AVLNode<T> *AVLTree<T>::MinValueNode(AVLNode<T> *node) {
+    AVLNode<T> *current = node;
+    while (current->Left != nullptr)
+        current = current->Left;
+    return current;
+}
+
 template <typename T>
 AVLNode<T> *AVLTree<T>::DeleteNode(AVLNode<T> *root, T key) {
     // Perform standard BST delete
