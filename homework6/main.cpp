@@ -51,7 +51,7 @@ int SubStringSearchZ(std::string text, std::string pattern) {
         // Если z-функция равна длине pattern, то нашли pattern
         if (zf[i] == pattern.length()) {
             // Выводим найденный индекс
-            return i;
+            return i - pattern.length() - 1;
         }
     }
     return -1;
@@ -62,10 +62,10 @@ int SubStringSearchPrefix(std::string text, std::string pattern) {
 
     // Проходимся по массиву
     for (int i = pattern.length(); i < prefixArr.size(); i++) {
-        // Если z-функция равна длине pattern, то нашли pattern
+        // Если префикс функция равна длине pattern, то нашли pattern
         if (prefixArr[i] == pattern.length()) {
             // Выводим найденный индекс
-            return i;
+            return i - (pattern.length() * 2);
         }
     }
     return -1;
@@ -76,6 +76,23 @@ int main() {
     std::string str;
     std::cin >> str;
 
+    std::vector<int> pref = PrefixFunction(str);
+    std::vector<int> zf = ZFunction(str);
+
+    // Вывод префикс функции
+    std::cout << "Результат префикс функции для строки:" << std::endl;
+    for (int i = 0; i < pref.size(); i++) {
+        std::cout << pref[i] << ' ';
+    }
+    std::cout << std::endl;
+
+    // Вывод z-функции
+    std::cout << "Результат z-функции для строки:" << std::endl;
+    for (int i = 0; i < pref.size(); i++) {
+        std::cout << zf[i] << ' ';
+    }
+    std::cout << std::endl;
+
     std::cout << "Введите паттерн:" << std::endl;
     std::string pattern;
     std::cin >> pattern;
@@ -84,29 +101,29 @@ int main() {
     int test = SubStringSearchZ(str, pattern);
     std::cout << test << std::endl;
     if (test > -1) {
-        std::cout << str.substr(test - pattern.length() - 1, pattern.length())
+        std::cout << str.substr(test, pattern.length())
                   << std::endl;
     }
     // Ищем подстроку в строке
     test = SubStringSearchPrefix(str, pattern);
     std::cout << test << std::endl;
     if (test > -1) {
-        std::cout << str.substr(test - (pattern.length() * 2), pattern.length())
+        std::cout << str.substr(test, pattern.length())
                   << std::endl;
     }
 
-    std::vector<int> pref = PrefixFunction(pattern + '#' + str);
-    std::vector<int> zf = ZFunction(pattern + '#' + str);
+    pref = PrefixFunction(pattern + '#' + str);
+    zf = ZFunction(pattern + '#' + str);
 
     // Вывод префикс функции
-    std::cout << "Результат префикс функции:" << std::endl;
+    std::cout << "Результат префикс функции для паттерна + # + строки:" << std::endl;
     for (int i = 0; i < pref.size(); i++) {
         std::cout << pref[i] << ' ';
     }
     std::cout << std::endl;
 
     // Вывод z-функции
-    std::cout << "Результат z-функции:" << std::endl;
+    std::cout << "Результат z-функции для паттерна + # + строки:" << std::endl;
     for (int i = 0; i < pref.size(); i++) {
         std::cout << zf[i] << ' ';
     }
