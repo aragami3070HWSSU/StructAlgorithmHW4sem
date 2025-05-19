@@ -1,4 +1,4 @@
-#import "conf.typ" : conf
+#import "../conf.typ" : conf
 #show: conf.with(
   title: [Анализ сложности сортировок, не использующих сравнение элементов],
   type: "referat",

@@ -1,4 +1,4 @@
-#import "conf.typ" : conf
+#import "../conf.typ" : conf
 #show: conf.with(
   title: [Анализ двоичного дерева поиска],
   type: "referat",
@@ -51,15 +51,20 @@ Tree *Node(int value) {
 
 void Insert(Tree *&tr, int value) {
     // Create new node
+		// Создание O(1)
     Tree *newNode = Node(value);
     // If tree empty
+		// O(1)
     if (!tr) {
         // Then new node is root
+				// O(1)
         tr = newNode;
     }
     else {
         // Create temp pointer on tree
         Tree *temp = tr;
+				// В худшем случае O(n)
+				// В лучшем и среднем O(log2(n))
         while (temp) {
             // If new elem > temp elem
             if (newNode->Value > temp->Value) {
@@ -123,6 +128,7 @@ Tree *Next(Tree *tr, int value) {
     return nodeParent;
 }
 
+// Т.к. сначала node надо найти, то прибавим еще O(log2(n))
 void Delete(Tree *&tr, Tree *node) {
     // Create delete node parent
     Tree *nodeParent = node->Parent;
@@ -219,20 +225,20 @@ void Delete(Tree *&tr, Tree *node) {
 // Рекурсивный поиск узла в дереве
 Tree *Find(Tree *tr, int value) {
     // If find or tree end
-		// Операция сравнения O(log(1))
+		// Операция сравнения O(1)
     if (tr->Value == value || !tr) {
         return tr;
     }
     // If value > this elem
-		// Операция сравнения O(log(1))
+		// Операция сравнения O(1)
     if (tr->Value < value) {
         // Go to right child
-				// O(log(n))
+				// O(log2(n))
         return Find(tr->Right, value);
     }
     else {
         // Go to left child
-				// O(log(n))
+				// O(log2(n))
         return Find(tr->Left, value);
     }
 }
@@ -270,6 +276,8 @@ void PostOrder(Tree *tr) {
     }
 }
 ```
+
 == Анализ сложности
+
 
 
