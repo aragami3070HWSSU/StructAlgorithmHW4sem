@@ -1,5 +1,5 @@
 #import "../conf.typ" : conf
-#show: conf.with(title: [Анализ ], type: "referat", info: (
+#show: conf.with(title: [Анализ префикс функции, z-функции и алгоритма КМП], type: "referat", info: (
   author: (name: [Смирнова Егора], faculty: [КНиИТ], group: "251", sex: "male"),
   inspector: (degree: "", name: ""),
 ), settings: (title_page: (enabled: true), contents_page: (enabled: true)))
@@ -72,7 +72,7 @@ $n$ --- длина строки
 std::vector<int> kmp(std::string text, std::string pattern) {
     int patternLength = pattern.length(); // O(1)
     int textLength = text.length(); // O(1)
-    std::vector<int> answer(textLength); // O(n^2)|O(n)
+    std::vector<int> answer(textLength); // O(n)
     // Значение префикс-функции
     std::vector<int> p = PrefixFunction(pattern + "#" + text); // O(n + k)
     int count = 0;
@@ -90,4 +90,4 @@ $n$ --- длина строки, $k$ --- длина паттерна
 - Префикс функция работает за $O(n^2)$ в худшем и за $O(n)$ в лучшем случаях
 - Цикл работает за $O(n)$
 
-Таким образом общая худашая сложность будет: $O(n) + O(n^2) + O(n) = O(n^2)$, а лучшая будет: $O(n) + O(n) + O(n) = O(n)$
+Таким образом общая временная сложность будет: $O(n) + O(n) + O(n) = O(n)$
