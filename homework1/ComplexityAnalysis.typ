@@ -122,13 +122,13 @@ void RadixSort(std::vector<int>& array, int size, int numOfDigits, int numSystem
     std::vector<std::vector<int>> temp(numSystem, std::vector<int>());
 
     int index;
-		// За время O(k *(n * k + n))
+		// За время O(n k^2)
     for (int i = 0; i < numOfDigits; ++i) {
         // temp index
         index = 0;
 				
 				// Distribution of items in temp
-				// За время O(n * k)
+				// За время O(n k)
         for (int j = 0; j < size; ++j) {
 						// За время O(k)
             index = (array[j] / Pow(numSystem, i)) % numSystem;
