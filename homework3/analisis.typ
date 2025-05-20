@@ -24,11 +24,7 @@
   )
 )
 
-= Двоичное дерево поиска
-== Код программы
-n --- количество элементов массива.
-
-k --- значение максимального элемента.
+= Код программы
 ```cpp
 // Binary Tree
 struct Tree {
@@ -62,21 +58,21 @@ void Insert(Tree *&tr, int value) {
     }
     else {
         // Create temp pointer on tree
-        Tree *temp = tr;
+        Tree *temp = tr;// O(1)
 				// В худшем случае O(n)
-				// В лучшем и среднем O(log2(n))
+				// В лучшем и среднем O(log(n))
         while (temp) {
             // If new elem > temp elem
             if (newNode->Value > temp->Value) {
                 // If temp have right child
                 if (temp->Right) {
                     // Then move temp pointer to right child
-                    temp = temp->Right;
+                    temp = temp->Right;// O(1)
                 }
                 else {
                     // New elem is right child temp
-                    newNode->Parent = temp;
-                    temp->Right = newNode;
+                    newNode->Parent = temp;// O(1)
+                    temp->Right = newNode;// O(1)
                     break;
                 }
             }
@@ -85,12 +81,12 @@ void Insert(Tree *&tr, int value) {
                 // If temp have left child
                 if (temp->Left) {
                     // Then move temp pointer to left child
-                    temp = temp->Left;
+                    temp = temp->Left;// O(1)
                 }
                 else {
                     // New elem is left child temp
-                    newNode->Parent = temp;
-                    temp->Left = newNode;
+                    newNode->Parent = temp;// O(1)
+                    temp->Left = newNode;// O(1)
                     break;
                 }
             }
@@ -98,7 +94,7 @@ void Insert(Tree *&tr, int value) {
     }
 }
 
-Tree *Min(Tree *tr) {
+Tree *Min(Tree *tr) { // O(log(n))
     // If not left child
     if (!tr->Left) {
         // Return tr
@@ -110,10 +106,10 @@ Tree *Min(Tree *tr) {
     }
 }
 
-Tree *Next(Tree *tr, int value) {
+Tree *Next(Tree *tr, int value) { // O(log(n))
     Tree *node = Find(tr, value);
     // Have right child
-    if (node->Right) {
+    if (node->Right) { // O(log(n))
         // Min in right branch
         return Min(node->Right);
     }
@@ -128,22 +124,22 @@ Tree *Next(Tree *tr, int value) {
     return nodeParent;
 }
 
-// Т.к. сначала node надо найти, то прибавим еще O(log2(n))
+// Т.к. сначала node надо найти, то прибавим еще O(log(n))
 void Delete(Tree *&tr, Tree *node) {
     // Create delete node parent
-    Tree *nodeParent = node->Parent;
+    Tree *nodeParent = node->Parent;// O(1)
     // Tree have only one node
     if (!nodeParent) {
-        tr = nullptr;
+        tr = nullptr;// O(1)
     }
     // Node haven't children
     else if (!node->Left && !node->Right) {
         // Set nullptr pointer on node in parent
         if (nodeParent->Left == node) {
-            nodeParent->Left = nullptr;
+            nodeParent->Left = nullptr;// O(1)
         }
         if (nodeParent->Right == node) {
-            nodeParent->Right = nullptr;
+            nodeParent->Right = nullptr;// O(1)
         }
         delete node;
     }
@@ -154,14 +150,14 @@ void Delete(Tree *&tr, Tree *node) {
             // If have right child
             if (!node->Left) {
                 // His become root
-                tr = node->Right;
-                node->Parent = nullptr;
+                tr = node->Right;// O(1)
+                node->Parent = nullptr;// O(1)
             }
             // If have left child
             else {
                 // His become root
-                tr = node->Left;
-                node->Parent = nullptr;
+                tr = node->Left;// O(1)
+                node->Parent = nullptr;// O(1)
             }
         }
         else {
@@ -169,26 +165,26 @@ void Delete(Tree *&tr, Tree *node) {
             if (!node->Left) {
                 if (nodeParent->Left == node) {
                     // child of node become child of his "grandpa"
-                    nodeParent->Left = node->Right;
+                    nodeParent->Left = node->Right;// O(1)
                 }
                 else {
                     // child of node become child of his "grandpa"
-                    nodeParent->Right = node->Right;
+                    nodeParent->Right = node->Right;// O(1)
                 }
                 // "Grandpa" become parent of this child
-                node->Right->Parent = nodeParent;
+                node->Right->Parent = nodeParent;// O(1)
             }
             else {
                 if (nodeParent->Left == node) {
                     // child of node become child of his "grandpa"
-                    nodeParent->Left = node->Left;
+                    nodeParent->Left = node->Left;// O(1)
                 }
                 else {
                     // child of node become child of his "grandpa"
-                    nodeParent->Right = node->Left;
+                    nodeParent->Right = node->Left;// O(1)
                 }
                 // "Grandpa" become parent of this child
-                node->Left->Parent = nodeParent;
+                node->Left->Parent = nodeParent;// O(1)
             }
             delete node;
         }
@@ -196,26 +192,26 @@ void Delete(Tree *&tr, Tree *node) {
     // Have 2 child
     else {
         // Next after deleting node
-        Tree *succ = Next(tr, node->Value);
-        node->Value = succ->Value;
+        Tree *succ = Next(tr, node->Value);// O(1)
+        node->Value = succ->Value;// O(1)
 
         // succ is left child
         if (succ->Parent->Left == succ) {
             // His right child become left child of child's "grandpa"
-            succ->Parent->Left = succ->Right;
+            succ->Parent->Left = succ->Right;// O(1)
             // This child exist
             if (succ->Right) {
                 // His "grandpa" become his parent
-                succ->Right->Parent = succ->Parent;
+                succ->Right->Parent = succ->Parent;// O(1)
             }
         }
         else {
             // His right child become right child of child's "grandpa"
-            succ->Parent->Right = succ->Right;
+            succ->Parent->Right = succ->Right;// O(1)
             // This child exist
             if (succ->Right) {
                 // His "grandpa" become his parent
-                succ->Right->Parent = succ->Parent;
+                succ->Right->Parent = succ->Parent;// O(1)
             }
         }
         delete succ;
@@ -223,7 +219,7 @@ void Delete(Tree *&tr, Tree *node) {
 }
 
 // Рекурсивный поиск узла в дереве
-Tree *Find(Tree *tr, int value) {
+Tree *Find(Tree *tr, int value) { // O(log(n))
     // If find or tree end
 		// Операция сравнения O(1)
     if (tr->Value == value || !tr) {
@@ -233,17 +229,15 @@ Tree *Find(Tree *tr, int value) {
 		// Операция сравнения O(1)
     if (tr->Value < value) {
         // Go to right child
-				// O(log2(n))
         return Find(tr->Right, value);
     }
     else {
         // Go to left child
-				// O(log2(n))
         return Find(tr->Left, value);
     }
 }
 
-void InOrder(Tree *tr) {
+void InOrder(Tree *tr) { // O(n)
     if (tr) {
         // Go to Left child
         InOrder(tr->Left);
@@ -254,7 +248,7 @@ void InOrder(Tree *tr) {
     }
 }
 
-void PreOrder(Tree *tr) {
+void PreOrder(Tree *tr) { // O(n)
     if (tr) {
         // Output elem
         std::cout << tr->Value << " ";
@@ -265,7 +259,7 @@ void PreOrder(Tree *tr) {
     }
 }
 
-void PostOrder(Tree *tr) {
+void PostOrder(Tree *tr) { // O(n)
     if (tr) {
         // Go to Left child
         PostOrder(tr->Left);
@@ -277,7 +271,40 @@ void PostOrder(Tree *tr) {
 }
 ```
 
-== Анализ сложности
+= Анализ сложности
+$N$ --- количество элементов в дереве
+== Случаи бинарного дерева
+=== Худший случай
+Дерево является вырожденным. У каждого узла только правый или только левый потомок. Высота дерева $= N$
+=== Лучший случай
+Дерево идеально сбалансировано. Высота одного поддерева отличается от высоты другого не более чем на 1. Высота такого дерева равна $log_2 N$
+=== Средний случай
+Любое дерево, не являющееся вырожденным и идеально сбалансированным. Высота(h): $log_2 N lt h lt N$
 
+== Вставка элемента
+Максимальное количество сравнений зависит от высоты дерева.
+=== Худший случай
+В худшем случае вставка произойдет за $O(N)$ сравнений, в крайний правый или левый узел.
+=== Лучший случай
+В лучшем случае вставка произойдет за $O(log_2 N)$ сравнений.
+=== Средний случай
+В среднем случае вставка произойдет за $O(log_2 N)$ сравнений.
 
+== Поиск элемента
+=== Лучший случай
+Проходим через узлы один за другим. Если мы найдем элелемент на втором уровне, то мы сделаем 2 сравнения, если на третьем, то 3 и т. д. Таким образом, на поиск ключа мы затратим время равное высоте дерева, то есть $log_2 N$, поэтому временная сложность поиска в лучшем случае составит $O(log_2 N)$
+=== Худший случай
+В худшем случае будет поиск крайнего правого или левого узла, за $O(N)$ сравнений
+=== Средний случай
+Высота дерева равна $log_2 N$. В среднем будет проведено $O(log_2 N)$ сравнений, как и в лучшем случае.
 
+== Обходы
+Все обходы занимают $O(N)$, так как нужно пройитсь по всем элементам.
+
+== Удаление
+- Если в дереве только корень, то нужно перезаписать его на null $O(1)$
+- Если нет детей, то мы заменяем указатели родителей удаляемого элемента на null $O(1)$
+- Если только один ребенок, то переобозначаем связи и удаление займет $O(1)$
+- Если есть оба ребенка, то находим следующий, вызывая функцию Next. Next выполняется за $O(log_2 N)$. После переобозначаем связи и удаление объекта. Конечная сложность $O(1) + O(log_2 N) = O(log_2 N)$.
+
+В коде имеется фиксированное количество операций сравнения. Удаление занимет $O(1)$, без учета на вызов функции поиска для нахождения узла, который нужно удалить
