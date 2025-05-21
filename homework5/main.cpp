@@ -1,7 +1,7 @@
 #include "AVLTree/AVLTree.h"
 
 int main() {
-    AVLTree<int> tree;
+    AVLTree tree;
     int n, x;
     std::cout << "Введите размер дерева:" << std::endl;
     std::cin >> n;
