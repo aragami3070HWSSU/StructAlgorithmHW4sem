@@ -21,7 +21,7 @@ class AVLTree {
     AVLNode *LeftRotate(AVLNode *x);
     AVLNode *Insert(AVLNode *node, int key);
     AVLNode *MinValueNode(AVLNode *node);
-    AVLNode *DeleteNode(AVLNode *root, int key);
+    AVLNode *DeleteNode(AVLNode *node, int key);
     void PrintHelper(AVLNode *root, std::string indent, bool last);
 
   public:

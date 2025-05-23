@@ -47,7 +47,7 @@ class AVLTree {
     AVLNode *LeftRotate(AVLNode *x);
     AVLNode *Insert(AVLNode *node, int key);
     AVLNode *MinValueNode(AVLNode *node);
-    AVLNode *DeleteNode(AVLNode *root, int key);
+    AVLNode *DeleteNode(AVLNode *node, int key);
     void PrintHelper(AVLNode *root, std::string indent, bool last);
 
   public:
@@ -116,22 +116,29 @@ AVLNode *AVLTree::Insert(AVLNode *node, int key) {
         return node;
     }
 
+		// Обновляем высоту узла
     node->Height = 1 + std::max(Height(node->Left), Height(node->Right));
-    int balance = BalanceFactor(node);
 
+		// Получаем BalanceFactor узла
+    int balance = BalanceFactor(node);
+  
+		// Левый левый случай
     if (balance > 1 && key < node->Left->Value) {
         return RightRotate(node);
     }
 
+		// Левый правый случай
     if (balance < -1 && key > node->Right->Value) {
         return LeftRotate(node);
     }
 
+		// Правый правый случай
     if (balance > 1 && key > node->Left->Value) {
         node->Left = LeftRotate(node->Left);
         return RightRotate(node);
     }
 
+		// Правый левый случай
     if (balance < -1 && key < node->Right->Value) {
         node->Right = RightRotate(node->Right);
         return LeftRotate(node);
@@ -176,68 +183,69 @@ AVLNode *AVLTree::MinValueNode(AVLNode *node) {
 }
 
 AVLNode *AVLTree::DeleteNode(AVLNode *root, int key) {
-    if (root == nullptr) {
-				return root;
+    if (node == nullptr) {
+				return node;
 		}
 
-    if (key < root->Value) {
-				root->Left = DeleteNode(root->Left, key);
+    if (key < node->Value) {
+				node->Left = DeleteNode(node->Left, key);
 		}
-    else if (key > root->Value) {
-				root->Right = DeleteNode(root->Right, key);
+    else if (key > node->Value) {
+				node->Right = DeleteNode(node->Right, key);
 		}
     else {
 				// Узел с одним ребенком или без детей
-        if ((root->Left == nullptr) || (root->Right == nullptr)) {
-            AVLNode *temp = root->Left ? root->Left : root->Right;
+        if ((node->Left == nullptr) || (node->Right == nullptr)) {
+            AVLNode *temp = node->Left ? node->Left : node->Right;
             if (temp == nullptr) {
-                temp = root;
-                root = nullptr;
+                temp = node;
+                node = nullptr;
             }
             else {
-								*root = *temp;
+								*node = *temp;
 						}
             delete temp;
         }
         else {
-            AVLNode *temp = MinValueNode(root->Right);
-            root->Value = temp->Value;
-            root->Right = DeleteNode(root->Right, temp->Value);
+            AVLNode *temp = MinValueNode(node->Right);
+            node->Value = temp->Value;
+            node->Right = DeleteNode(node->Right, temp->Value);
         }
     }
 
-    if (root == nullptr){
-        return root;
+    if (node == nullptr){
+        return node;
 		}
 
 		// Обновляем высоту узла
-    root->Height = 1 + std::max(Height(root->Left), Height(root->Right));
+    node->Height = 1 + std::max(Height(node->Left), Height(node->Right));
 
 		// Получаем BalanceFactor узла
-    int balance = BalanceFactor(root);
+    int balance = BalanceFactor(node);
 
 		// Если узел небалансированный, тогда есть 4 случая
 
 		// Левый левый случай
-    if (balance > 1 && BalanceFactor(root->Left) >= 0)
-        return RightRotate(root);
+    if (balance > 1 && BalanceFactor(node->Left) >= 0) {
+				return RightRotate(node);
+		}
 
 		// Левый правый случай
-    if (balance > 1 && BalanceFactor(root->Left) < 0) {
-        root->Left = LeftRotate(root->Left);
-        return RightRotate(root);
+    if (balance > 1 && BalanceFactor(node->Left) < 0) {
+        node->Left = LeftRotate(node->Left);
+        return RightRotate(node);
     }
 
 		// Правый правый случай
-    if (balance < -1 && BalanceFactor(root->Right) <= 0)
-        return LeftRotate(root);
+    if (balance < -1 && BalanceFactor(node->Right) <= 0)
+        return LeftRotate(node);
 
 		// Правый левый случай
-    if (balance < -1 && BalanceFactor(root->Right) > 0) {
-        root->Right = RightRotate(root->Right);
-        return LeftRotate(root);
+    if (balance < -1 && BalanceFactor(node->Right) > 0) {
+        node->Right = RightRotate(node->Right);
+        return LeftRotate(node);
     }
-    return root;
+    return node;
 }
 
 void AVLTree::Insert(int key) {
