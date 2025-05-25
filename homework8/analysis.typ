@@ -1,15 +1,41 @@
-#include <algorithm>
-#include <iostream>
-#include <string>
-#include <vector>
+#import "../conf.typ" : conf
+#show: conf.with(
+  title: [Анализ алгоритма Бойера-Мура],
+  type: "referat",
+  info: (
+      author: (
+        name: [Смирнова Егора],
+        faculty: [КНиИТ],
+        group: "251",
+        sex: "male"
+      ),
+      inspector: (
+        degree: "",
+        name: ""
+      )
+  ),
+  settings: (
+    title_page: (
+      enabled: true
+    ),
+    contents_page: (
+      enabled: true
+    )
+  )
+)
 
-#define ALPHABET_LEN 256
+= Код программы
+$n$ --- длина строки/текста, в котором мы ищем шаблон
 
+$m$ --- длина шаблона (искомой строки)
+
+```cpp
+// Заполняем таблицу badChar за O(m)
 void preBmBc(std::vector<int> &table, std::string pattern) {
-    for (int i = 0; i < ALPHABET_LEN; i++) {
+    for (int i = 0; i < ALPHABET_LEN; i++) { // O(ALPHABET_LEN)
         table[i] = pattern.length();
     }
-    for (int i = 0; i < pattern.length() - 1; i++) {
+    for (int i = 0; i < pattern.length() - 1; i++) { // O(m)
         table[pattern[i]] = pattern.length() - 1 - i;
     }
 }
@@ -64,7 +90,6 @@ int BM(std::string text, std::string pattern) {
     preBmBc(badChar, pattern);
     preBmGc(goodSuf, pattern);
 
-
     int i = patternL - 1; // Позиция в тексте
     while (i < textL) {
         int j = patternL - 1; // Позиция в шаблоне
@@ -78,22 +103,30 @@ int BM(std::string text, std::string pattern) {
             // Найдено совпадение
             return i + 1;
         }
+
         // Сдвиг по максимальному из двух правил
 		i += std::max(badChar[text[i]], goodSuf[j]);
     }
     return 0;
 }
+```
 
-int main() {
-    std::string text, pattern;
-    std::cout << "Введите строку, в которой будет искать подстроку:"
-              << std::endl;
-    std::cin >> text;
-    std::cout << "введите подстроку:" << std::endl;
-    std::cin >> pattern;
-    int ans = BM(text, pattern);
-    for (int i = ans; i < ans + pattern.length(); i++) {
-        std::cout << text[i];
-    }
-    return 0;
-}
+= Анализ сложности
+== Построение таблиц
+Построение таблиц происходит за $O(m)$ и для "Плохих символов" и "Хороших суффиксов".
+== Поиск подстроки
+В основном цикле количество сдвигов не может превышать $n/m$, причем каждый сдвиг как минимум на одну позицию.
+
+При выполнении каждого сдвига берутся данные из таблиц "Плохих символов" и "Хороших суффиксов" и из них выбирается максимальное значение. В худшем случае определение каждого займет $O(n dot m)$.
+
+Следовательно, в худшем случае алгоритм работает за:
+$
+O(m) + O(m) + O(n) dot O(m) = O(n dot m)
+$
+
+В лучшем случае алгоритм, применяя таблицы, будет выполнять крупные сдвиги. Это сокращает число сравнений и сдвигов. При этомобщее количество сдвигов не превышает $n/m$:
+$
+O(m) + O(m) + O(n/m) dot O(m) = O(n)
+$
+
+В среднем случае алгоритм так же работает за $O(n)$
