@@ -64,14 +64,13 @@ int BM(std::string text, std::string pattern) {
     preBmBc(badChar, pattern);
     preBmGc(goodSuf, pattern);
 
-
     int i = patternL - 1; // Позиция в тексте
     while (i < textL) {
         int j = patternL - 1; // Позиция в шаблоне
         // Сравниваем справа налево
         while (j >= 0 && text[i] == pattern[j]) {
-			--i;
-			--j;
+            --i;
+            --j;
         }
 
         if (j < 0) {
@@ -79,9 +78,9 @@ int BM(std::string text, std::string pattern) {
             return i + 1;
         }
         // Сдвиг по максимальному из двух правил
-		i += std::max(badChar[text[i]], goodSuf[j]);
+        i += std::max(badChar[text[i]], goodSuf[j]);
     }
-    return 0;
+    return -1;
 }
 
 int main() {
@@ -92,6 +91,10 @@ int main() {
     std::cout << "введите подстроку:" << std::endl;
     std::cin >> pattern;
     int ans = BM(text, pattern);
+    if (ans == -1) {
+        std::cout << "Шаблон не найден:" << std::endl;
+    }
+    std::cout << "Шаблон найден в:" << ans << std::endl;
     for (int i = ans; i < ans + pattern.length(); i++) {
         std::cout << text[i];
     }
