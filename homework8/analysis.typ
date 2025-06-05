@@ -63,7 +63,7 @@ int suffixLength(std::string word, int pos) {
 void preBmGc(std::vector<int> &table, std::string pattern) {
     int lastPrefixIndex = 1;
     // Этап 1: Находим границы совпадений
-    for (int pos = pattern.length() - 1; pos >= 0; pos--) {
+    for (int pos = pattern.length() - 1; pos >= 0; pos--) { // O(m)
         if (isPrefix(pattern, pos + 1)) {
             lastPrefixIndex = pos + 1;
         }
@@ -71,7 +71,7 @@ void preBmGc(std::vector<int> &table, std::string pattern) {
     }
 
     // Этап 2: Заполняем таблицу хороших суффиксов
-    for (int pos = 0; pos < pattern.length() - 1; pos++) {
+    for (int pos = 0; pos < pattern.length() - 1; pos++) { // O(m)
         int suffixLen = suffixLength(pattern, pos);
         if (pattern[pos - suffixLen] !=
             pattern[pattern.length() - 1 - suffixLen]) {
@@ -87,8 +87,8 @@ int BM(std::string text, std::string pattern) {
     int textL = text.length();
     int patternL = pattern.length();
 
-    preBmBc(badChar, pattern);
-    preBmGc(goodSuf, pattern);
+    preBmBc(badChar, pattern); // O(m)
+    preBmGc(goodSuf, pattern); // O(m)
 
     int i = patternL - 1; // Позиция в тексте
     while (i < textL) {
